@@ -23,7 +23,7 @@ public class InstallManagerTest {
     public void should_install_diferencia_to_be_run() throws IOException {
 
         // Given
-        when(operativeSystemConfig.resolveDiferenciaBinary()).thenReturn("diferencia_darwin_amd64");
+        when(operativeSystemConfig.resolveDiferenciaBinary()).thenReturn("ddiferencia_darwin_amd64");
         final InstallManager installManager = new InstallManager();
         installManager.operativeSystemConfig = operativeSystemConfig;
 
@@ -40,7 +40,7 @@ public class InstallManagerTest {
     public void should_uninstall_diferencia() throws IOException {
 
         // Given
-        when(operativeSystemConfig.resolveDiferenciaBinary()).thenReturn("diferencia_darwin_amd64");
+        when(operativeSystemConfig.resolveDiferenciaBinary()).thenReturn("ddiferencia_darwin_amd64");
         final InstallManager installManager = new InstallManager();
         installManager.operativeSystemConfig = operativeSystemConfig;
 

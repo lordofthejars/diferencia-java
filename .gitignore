@@ -1,7 +1,7 @@
 
 # Created by https://www.gitignore.io/api/java,maven,eclipse,netbeans,intellij,intellij+iml,visualstudiocode
 
-src/main/resources/binaries/*
+core/src/main/resources/binaries/*
 
 ### Eclipse ###
 

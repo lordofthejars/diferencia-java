@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 public class DiferenciaConfiguration {
 
+    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PROMETHEUS_PORT = 8081;
+    private static final int DEFAULT_ADMIN_PORT = 8082;
+
     private static final String PORT = "--port";
     private static final String SERVICE_NAME = "--serviceName";
     private static final String PRIMARY  = "--primary";
@@ -171,117 +175,144 @@ public class DiferenciaConfiguration {
         return arguments;
     }
 
+    public int getPortOrDefault() {
+        if (this.port == null) {
+            return DEFAULT_PORT;
+        }
+
+        return this.port;
+    }
+
+    public int getPrometheusPortOrDefault() {
+        if (this.prometheusPort == null) {
+            return DEFAULT_PROMETHEUS_PORT;
+        }
+
+        return this.prometheusPort;
+    }
+
+    public int getAdminPortOrDefault() {
+        if (this.adminPort == null) {
+            return DEFAULT_ADMIN_PORT;
+        }
+
+        return this.adminPort;
+    }
+
+    public boolean isHttps() {
+        return false;
+    }
+
+    public boolean isPrometheusEnabled() {
+        return this.prometheus != null && this.prometheus;
+    }
+
     private String toCsv(List<String> args) {
         return args.stream()
             .collect(Collectors.joining(", "));
     }
 
-    public static class DiferenciaConfigurationBuilder {
+    public static class Builder {
         private DiferenciaConfiguration diferenciaConfiguration;
 
-        private DiferenciaConfigurationBuilder() {
+        public Builder(String primary, String candidate) {
+            this.diferenciaConfiguration = new DiferenciaConfiguration();
+            this.diferenciaConfiguration.primary = primary;
+            this.diferenciaConfiguration.candidate = candidate;
+
         }
 
-        public static final DiferenciaConfigurationBuilder newConfigurationBuilder(String primary, String candidate) {
-            DiferenciaConfigurationBuilder diferenciaConfigurationBuilder = new DiferenciaConfigurationBuilder();
-            diferenciaConfigurationBuilder.diferenciaConfiguration = new DiferenciaConfiguration();
-            diferenciaConfigurationBuilder.diferenciaConfiguration.primary = primary;
-            diferenciaConfigurationBuilder.diferenciaConfiguration.candidate = candidate;
-
-            return diferenciaConfigurationBuilder;
-        }
-
-        public DiferenciaConfigurationBuilder withPort(Integer port) {
+        public Builder withPort(Integer port) {
             diferenciaConfiguration.port = port;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withServiceName(String serviceName) {
+        public Builder withServiceName(String serviceName) {
             diferenciaConfiguration.serviceName = serviceName;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withSecondary(String secondary) {
+        public Builder withSecondary(String secondary) {
             diferenciaConfiguration.secondary = secondary;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withStoreResults(String storeResults) {
+        public Builder withStoreResults(String storeResults) {
             diferenciaConfiguration.storeResults = storeResults;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withDiferenciaMode(DiferenciaMode diferenciaMode) {
+        public Builder withDiferenciaMode(DiferenciaMode diferenciaMode) {
             diferenciaConfiguration.differenceMode = diferenciaMode;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withNoiseDetection(Boolean noiseDetection) {
+        public Builder withNoiseDetection(Boolean noiseDetection) {
             diferenciaConfiguration.noiseDetection = noiseDetection;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withAllowUnsafeOperations(Boolean unsafe) {
+        public Builder withAllowUnsafeOperations(Boolean unsafe) {
             diferenciaConfiguration.allowUnsafeOperations = unsafe;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withPrometheus(Boolean prometheus) {
+        public Builder withPrometheus(Boolean prometheus) {
             diferenciaConfiguration.prometheus = prometheus;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withPrometheusPort(Integer port) {
+        public Builder withPrometheusPort(Integer port) {
             diferenciaConfiguration.prometheusPort = port;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withLogLevel(String loglevel) {
+        public Builder withLogLevel(String loglevel) {
             diferenciaConfiguration.logLevel = loglevel;
             return  this;
         }
 
-        public DiferenciaConfigurationBuilder withHeaders(Boolean headers) {
+        public Builder withHeaders(Boolean headers) {
             diferenciaConfiguration.headers = headers;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withIgnoreHeadersValues(List<String> ignoreHeadersValues) {
+        public Builder withIgnoreHeadersValues(List<String> ignoreHeadersValues) {
             diferenciaConfiguration.ignoreHeadersValues = ignoreHeadersValues;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withIgnoreValues(List<String> ignoreValues) {
+        public Builder withIgnoreValues(List<String> ignoreValues) {
             diferenciaConfiguration.ignoreValues = ignoreValues;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withIgnoreValuesFile(String ignoreValuesFile) {
+        public Builder withIgnoreValuesFile(String ignoreValuesFile) {
             diferenciaConfiguration.ignoreValuesFile = ignoreValuesFile;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withAdminPort(Integer adminPort) {
+        public Builder withAdminPort(Integer adminPort) {
             diferenciaConfiguration.adminPort = adminPort;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withInsecureSkipVerify(Boolean insecureSkipVerify) {
+        public Builder withInsecureSkipVerify(Boolean insecureSkipVerify) {
             diferenciaConfiguration.insecureSkipVerify = insecureSkipVerify;
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withCaCert(Path caCert) {
+        public Builder withCaCert(Path caCert) {
             diferenciaConfiguration.caCert = caCert.toAbsolutePath().toString();
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withClientCert(Path clientCert) {
+        public Builder withClientCert(Path clientCert) {
             diferenciaConfiguration.clientCert = clientCert.toAbsolutePath().toString();
             return this;
         }
 
-        public DiferenciaConfigurationBuilder withClientKey(Path clientKey) {
+        public Builder withClientKey(Path clientKey) {
             diferenciaConfiguration.clientKey = clientKey.toAbsolutePath().toString();
             return this;
         }

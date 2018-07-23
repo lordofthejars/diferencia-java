@@ -1,0 +1,10 @@
+= Diferencia Java
+
+Diferencia Java is a wapper around https://github.com/lordofthejars/diferencia[Diferencia] which makes smoothly the usage of it in side Java language.
+
+This project takes care ofinstalling Diferencia, run it, interact with it and finally shutdown.
+So if you are using it you do not need to take care of installing nothing.
+
+== Developing
+
+To develop the project first of all you need to run `mvn clean compile` to download all required artifacts to be able to run the tests.
