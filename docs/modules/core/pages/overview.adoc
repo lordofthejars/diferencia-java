@@ -1,0 +1,7 @@
+= Diferencia Java Core
+include::_attributes.adoc[]
+
+*Core* module is a framework-less module which implements all logic to deal with Diferencia.
+
+You can think about this module as the base module that all Java implementations might use to integrate Diferencia with Java.
+Of course, it can be used standalone directly in your Java code, but the idea is to be used by frameworks that want to implement support for Diferencia.

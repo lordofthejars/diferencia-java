@@ -1,0 +1,60 @@
+= Using Core
+include::_attributes.adoc[]
+
+[#installation]
+== Installing
+
+To install Diferencia Java Core you only need to add next dependency on your build tool.
+
+=== Maven
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>com.lordofthejars</groupId>
+    <artifactId>diferencia-java-core</artifactId>
+    <version>${version}</version>
+    <scope>test</scope>
+</dependency>
+----
+
+=== Gradle
+
+[source, groovy]
+.build.gradle
+----
+compile "com.lordofthejars:diferencia-java-core:${version}"
+----
+
+[#code-example]
+== Code Example
+
+The main class of this module is `com.lordofthejars.diferencia.core.Diferencia` which is the entrypoint that deals with Diferencia.
+
+[source, java]
+.Example.java
+----
+final DiferenciaConfiguration.Builder configurationBuilder =
+        new DiferenciaConfiguration
+        .Builder("http://now.httpbin.org", "http://now.httpbin.org")
+        .withSecondary("http://now.httpbin.org").withNoiseDetection(true); // <1>
+
+diferencia = new Diferencia(configurationBuilder); // <2>
+        
+diferencia.start(); // <3>
+
+final String diferenciaUrl = diferencia.getDiferenciaUrl(); // <4>
+final Response response = sendRequest(diferenciaUrl, "/"); // <5>
+
+diferencia.close(); // <6>
+----
+<1> Configuration parameters
+<2> Instantiate `Diferencia` with given configuration
+<3> Start Diferencia and wait until it is up and running.
+<4> Gets URL to send requests
+<5> Sends a request to Diferencia.
+<6> Last you need to stop Diferencia
+
+IMPORTANT: You don't need to donload anything manually, everything is automatically installed.
+

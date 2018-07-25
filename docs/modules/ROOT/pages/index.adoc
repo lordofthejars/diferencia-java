@@ -1,0 +1,12 @@
+= Diferencia Java
+
+xref:diferencia::index.adoc[Diferencia] is designed to act as a proxy which intercepts calls to a service and multicast it to several instances of the same service. These instances are an old and new version of the service. Then when the response is returned from each instance, Diferencia will check if both responses are similar (we will see later what it means similar), and if it is the case, then the two implementations might be considered compatible and the new version implementation is *regression-free*.
+
+*Diferencia-Java* is just a wrapper around Diferencia, which gives you a Java API for managing it in Java.
+It gives you the next features:
+
+* [x] Install Diferencia automatically, you don't need to install anything manually.
+* [x] Start/Stop Diferencia without dealing directly with CLI.
+* [x] Specific Http Client to connect to Diferencia Rest API.
+* [x] Allows you to be used as plain Java. xref:core:overview.adoc[Core Module]
+* [x] Integration to Java frameworks such as JUnit, JUnit 5, Maven, Gradle, Arquillian, ...

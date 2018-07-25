@@ -1,0 +1,8 @@
+name: diferencia-java
+title: Diferencia Java
+version: '0.3.0'
+nav:
+- modules/ROOT/nav.adoc
+- modules/core/nav.adoc
+
+start_page: ROOT:index.adoc

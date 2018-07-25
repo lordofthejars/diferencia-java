@@ -87,13 +87,13 @@ public class DiferenciaTest {
                 .withSecondary("http://now.httpbin.org").withNoiseDetection(true);
 
         diferencia = new Diferencia(configurationBuilder);
-
+        
         // When
         diferencia.start();
 
         // Then
-        final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final String diferenciaUrl = diferencia.getDiferenciaUrl(); 
+        final Response response = sendRequest(diferenciaUrl, "/"); 
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
 
     }
