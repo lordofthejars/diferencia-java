@@ -55,7 +55,9 @@ public class DiferenciaRule extends ExternalResource {
 
     @Override
     protected void after() {
-        diferencia.close();
+        if (this.diferencia != null) {
+            diferencia.close();
+        }
     }
 
     public DiferenciaClient getDiferenciaClient() {

@@ -317,6 +317,11 @@ public class DiferenciaConfiguration {
             return this;
         }
 
+        public Builder withExtraArguments(List<String> arguments) {
+            diferenciaConfiguration.extraArguments = arguments;
+            return this;
+        }
+
         public DiferenciaConfiguration build() {
             return diferenciaConfiguration;
         }

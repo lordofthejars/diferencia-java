@@ -1,0 +1,79 @@
+= Using Core
+include::_attributes.adoc[]
+
+[#installation]
+== Installing
+
+To install Diferencia Java JUnit 5 you need to add `JUnit 5` and `Diferencia JUnit 5` dependencies on your build tool.
+
+=== Maven
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>com.lordofthejars</groupId>
+    <artifactId>diferencia-java-junit</artifactId>
+    <version>${version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <version>5.2.0</version>
+    <scope>test</scope>
+</dependency>
+----
+
+=== Gradle
+
+[source, groovy]
+.build.gradle
+----
+testCompile "com.lordofthejars:diferencia-java-junit:${version}"
+testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
+testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
+----
+
+[#code-example]
+== Code Example
+
+The Extension class to be used is `com.lordofthejars.diferencia.junit.DiferenciaExtension` which is the one responsible for managing the lifecycle of Diferencia and provides the parameter resolver.
+
+[source, java]
+.DiferenciaExtensionTest.java
+----
+@ExtendWith(DiferenciaExtension.class) // <1>
+@DiferenciaCore(primary = "http://now.httpbin.org", candidate = "http://now.httpbin.org", // <2>
+    config = @DiferenciaConfig(noiseDetection = true, secondary = "http://now.httpbin.org")) // <3>
+public class DiferenciaExtensionTest {
+
+    @Test
+    public void should_use_diferencia_to_detect_any_possible_regression(Diferencia diferencia) // <4>
+            throws IOException {
+
+        final String diferenciaUrl = diferencia.getDiferenciaUrl(); // <5>
+        final Response response = sendRequest(diferenciaUrl, "/");
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK); // <6>
+
+    }
+}
+----
+<1> Diferencia extension registration.
+<2> Defines primary and candidate URLs.
+<3> Configures Diferencia with extra parameters.
+<4> Injects `Diferencia` object in test method.
+<5> Gets URL to send requests.
+<6> In this case both responses are different but with noise detection so they should pass.
+
+
+[NOTE]
+.About sending requests
+====
+`sendRequest` is a helper method created in the test to send request to Diferencia.
+
+In this case it is using http://square.github.io/okhttp/[OkHttp] to send to the Diferencia proxy a `GET` request to `/` path.
+Internally Diferencia will duplicate this call to the primary and to the candidate, compare both responses and send back the result.
+
+Of course you can use any other HttpClient to validate the compatibility such as http://rest-assured.io/[REST-assured].
+====

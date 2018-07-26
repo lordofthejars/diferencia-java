@@ -1,0 +1,6 @@
+= Diferencia Java JUnit 5
+include::_attributes.adoc[]
+
+
+*JUnit 5* module offers an integration to JUnit 5 test framework taking advantage of its new Extension API.
+Apart from managing correctly the lifecycle of Diferencia, it also provides a `ParameterResolver` to inject `Diferencia` instance in test method.

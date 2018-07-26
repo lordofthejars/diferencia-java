@@ -1,5 +1,5 @@
 * xref:overview.adoc[JUnit 4]
 
-* xref:using.adoc[Using with JUnit 4]
-** xref:using.adoc#installation[Install]
-** xref:using.adoc#code-example[Example]
+** xref:using.adoc[Using with JUnit 4]
+*** xref:using.adoc#installation[Install]
+*** xref:using.adoc#code-example[Example]

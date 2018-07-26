@@ -1,5 +1,5 @@
-* xref:overview.adoc[Core]
+* xref:overview.adoc[JUnit 5]
 
-** xref:using.adoc[Using Core]
+** xref:using.adoc[Using with JUnit 5]
 *** xref:using.adoc#installation[Install]
 *** xref:using.adoc#code-example[Example]
