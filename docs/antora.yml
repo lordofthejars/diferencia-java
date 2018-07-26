@@ -4,5 +4,6 @@ version: '0.3.0'
 nav:
 - modules/ROOT/nav.adoc
 - modules/core/nav.adoc
+- modules/junit/nav.adoc
 
 start_page: ROOT:index.adoc

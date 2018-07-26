@@ -1,0 +1,6 @@
+= Diferencia Java JUnit 4
+include::_attributes.adoc[]
+
+
+*JUnit* module offers an integration to JUnit 4 test framework in form of JUnit `Rule`.
+It is recommended to use `@ClassRule` instead of `@Rule` for better performance of tests.

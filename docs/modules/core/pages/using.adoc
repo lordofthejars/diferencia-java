@@ -15,7 +15,6 @@ To install Diferencia Java Core you only need to add next dependency on your bui
     <groupId>com.lordofthejars</groupId>
     <artifactId>diferencia-java-core</artifactId>
     <version>${version}</version>
-    <scope>test</scope>
 </dependency>
 ----
 
@@ -56,5 +55,5 @@ diferencia.close(); // <6>
 <5> Sends a request to Diferencia.
 <6> Last you need to stop Diferencia
 
-IMPORTANT: You don't need to donload anything manually, everything is automatically installed.
+IMPORTANT: You don't need to download anything manually, everything is automatically installed.
 

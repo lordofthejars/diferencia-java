@@ -1,0 +1,71 @@
+= Using Core
+include::_attributes.adoc[]
+
+[#installation]
+== Installing
+
+To install Diferencia Java JUnit you need to add `JUnit 4` and `Diferencia JUnit` dependencies on your build tool.
+
+=== Maven
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>com.lordofthejars</groupId>
+    <artifactId>diferencia-java-junit</artifactId>
+    <version>${version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version>
+    <scope>test</scope>
+</dependency>
+----
+
+=== Gradle
+
+[source, groovy]
+.build.gradle
+----
+testCompile "com.lordofthejars:diferencia-java-junit:${version}"
+testCompile "junit:junit:4.12"
+----
+
+[#code-example]
+== Code Example
+
+The `JUnit Rule` class to be used is `com.lordofthejars.diferencia.junit.DiferenciaRule` which is the one responsible for managing the lifecycle of Diferencia and provides methods to get Diferencia clients.
+
+[source, java]
+.ExampleTest.java
+----
+@ClassRule // <1>
+public static DiferenciaRule diferenciaRule =
+    new DiferenciaRule("http://now.httpbin.org/", "http://now.httpbin.org/"); // <2>
+
+@Test
+public void should_use_diferencia_to_detect_any_possible_regression() throws IOException {
+    final String diferenciaUrl = diferenciaRule.getDiferenciaUrl(); // <3>
+    final Response response = sendRequest(diferenciaUrl, "/");
+    assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED); // <4>
+}
+----
+<1> `ClassRule` for better performance.
+<2> Defines and configures Diferencia. You can also use `DiferenciaConfiguration` object as parameter.
+<3> Gets URL to send requests.
+<4> In this case both responses are different so they should fail.
+
+
+[NOTE]
+.About sending requests
+====
+`sendRequest` is a helper method created in the test to send request to Diferencia.
+
+In this case it is using http://square.github.io/okhttp/[OkHttp] to send to the Diferencia proxy a `GET` request to `/` path.
+Internally Diferencia will duplicate this call to the primary and to the candidate, compare both responses and send back the result.
+
+Of course you can use any other HttpClient to validate the compatibility such as http://rest-assured.io/[REST-assured].
+====
