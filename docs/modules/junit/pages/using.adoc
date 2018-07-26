@@ -44,13 +44,15 @@ The `JUnit Rule` class to be used is `com.lordofthejars.diferencia.junit.Diferen
 ----
 @ClassRule // <1>
 public static DiferenciaRule diferenciaRule =
-    new DiferenciaRule("http://now.httpbin.org/", "http://now.httpbin.org/"); // <2>
+    new DiferenciaRule("http://now.httpbin.org/",
+                       "http://now.httpbin.org/"); // <2>
 
 @Test
-public void should_use_diferencia_to_detect_any_possible_regression() throws IOException {
+public void should_use_diferencia_to_detect_any_possible_regression()
+      throws IOException {
     final String diferenciaUrl = diferenciaRule.getDiferenciaUrl(); // <3>
     final Response response = sendRequest(diferenciaUrl, "/");
-    assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED); // <4>
+    assertThat(response.code()).isEqualTo(HTTP_PRECON_FAILED); // <4>
 }
 ----
 <1> `ClassRule` for better performance.
