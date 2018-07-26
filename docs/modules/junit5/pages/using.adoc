@@ -44,12 +44,14 @@ The Extension class to be used is `com.lordofthejars.diferencia.junit.Diferencia
 .DiferenciaExtensionTest.java
 ----
 @ExtendWith(DiferenciaExtension.class) // <1>
-@DiferenciaCore(primary = "http://now.httpbin.org", candidate = "http://now.httpbin.org", // <2>
-    config = @DiferenciaConfig(noiseDetection = true, secondary = "http://now.httpbin.org")) // <3>
+@DiferenciaCore(primary = "http://now.httpbin.org",
+                candidate = "http://now.httpbin.org", // <2>
+    config = @DiferenciaConfig(noiseDetection = true,
+                               secondary = "http://now.httpbin.org")) // <3>
 public class DiferenciaExtensionTest {
 
     @Test
-    public void should_use_diferencia_to_detect_any_possible_regression(Diferencia diferencia) // <4>
+    public void should_detect_any_possible_regression(Diferencia diferencia) // <4>
             throws IOException {
 
         final String diferenciaUrl = diferencia.getDiferenciaUrl(); // <5>
