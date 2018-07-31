@@ -2,9 +2,13 @@ package com.lordofthejars.diferencia.core;
 
 import com.lordofthejars.diferencia.api.DiferenciaConfiguration;
 import com.lordofthejars.diferencia.api.DiferenciaConfigurationUpdate;
+import com.lordofthejars.diferencia.api.Stat;
+import com.lordofthejars.diferencia.api.Stats;
+import com.lordofthejars.diferencia.gateway.DiferenciaAdminClient;
 import com.lordofthejars.diferencia.gateway.DiferenciaClient;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.nio.file.Paths;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -120,6 +124,61 @@ public class DiferenciaTest {
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
         final Response response = sendRequest(diferenciaUrl, "/");
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
+
+    @Test
+    public void should_return_zero_elements_in_stat_api_if_no_regression_occurred() throws IOException {
+
+        // Precondition
+        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+
+        // Given
+
+        final DiferenciaConfiguration.Builder configurationBuilder =
+            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
+                .withSecondary("http://now.httpbin.org").withNoiseDetection(true);
+        diferencia = new Diferencia(configurationBuilder.build());
+
+        diferencia.diferenciaHome = Paths.get(LOCAL_DIFERENCIA);
+
+        // When
+        diferencia.start();
+        final String diferenciaUrl = diferencia.getDiferenciaUrl();
+        final Response response = sendRequest(diferenciaUrl, "/");
+
+        // Then
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
+        final DiferenciaAdminClient diferenciaAdminClient = diferencia.getDiferenciaAdminClient();
+        final Stats stats = diferenciaAdminClient.stats();
+        assertThat(stats.isEmpty()).isTrue();
+
+    }
+
+    @Test
+    public void should_return_failed_elements_in_stat_api_if_regression_occurred() throws IOException {
+
+        // Precondition
+        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+
+        // Given
+        final DiferenciaConfiguration.Builder configurationBuilder =
+            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org");
+        diferencia = new Diferencia(configurationBuilder.build());
+
+        diferencia.diferenciaHome = Paths.get(LOCAL_DIFERENCIA);
+
+        // When
+        diferencia.start();
+        final String diferenciaUrl = diferencia.getDiferenciaUrl();
+        final Response response = sendRequest(diferenciaUrl, "/");
+
+        // Then
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);
+        final DiferenciaAdminClient diferenciaAdminClient = diferencia.getDiferenciaAdminClient();
+        final Stats stats = diferenciaAdminClient.stats();
+
+        assertThat(stats.isEmpty()).isFalse();
+        assertThat(stats.getStats()).containsExactly(new Stat("GET", "/", 1));
     }
 
     private Response sendRequest(String diferenciaUrl, String path) throws IOException {
