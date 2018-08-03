@@ -139,8 +139,6 @@ public class DiferenciaTest {
                 .withSecondary("http://now.httpbin.org").withNoiseDetection(true);
         diferencia = new Diferencia(configurationBuilder.build());
 
-        diferencia.diferenciaHome = Paths.get(LOCAL_DIFERENCIA);
-
         // When
         diferencia.start();
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
@@ -164,8 +162,6 @@ public class DiferenciaTest {
         final DiferenciaConfiguration.Builder configurationBuilder =
             new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org");
         diferencia = new Diferencia(configurationBuilder.build());
-
-        diferencia.diferenciaHome = Paths.get(LOCAL_DIFERENCIA);
 
         // When
         diferencia.start();

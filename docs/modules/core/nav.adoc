@@ -3,3 +3,5 @@
 ** xref:using.adoc[Using Core]
 *** xref:using.adoc#installation[Install]
 *** xref:using.adoc#code-example[Example]
+
+** xref:admin.adoc[Admin Client]

@@ -38,7 +38,16 @@ public class Stat {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(method, path, errors);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Stat{");
+        sb.append("method='").append(method).append('\'');
+        sb.append(", path='").append(path).append('\'');
+        sb.append(", errors=").append(errors);
+        sb.append('}');
+        return sb.toString();
     }
 }

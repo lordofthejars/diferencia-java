@@ -1,0 +1,45 @@
+= Diferencia Java Admin Client
+include::_attributes.adoc[]
+
+Diferencia hasan admin console that can be accessed using a Rest API.
+In case of using Java, you don't need to implement anything as `Diferencia` class gibes you a method to get a `DiferenciaAdminClient` that can be used to accessed it.
+
+
+== Example
+
+To get the `DiferenciaAdminClient` you only need to:
+
+[source, java]
+----
+Diferencia diferencia = new Diferencia(configurationBuilder.build());
+final DiferenciaAdminClient diferenciaAdminClient = diferencia
+          .getDiferenciaAdminClient(); // <1>
+----
+<1> Returns an instance configured to interact with admin
+
+To update the configuration of Diferencia:
+
+[source, java]
+----
+final DiferenciaConfigurationUpdate build = new DiferenciaConfigurationUpdate.Builder()
+            .withNoiseDetection(true)
+            .withSecondary("http://now.httpbin.org/")
+            .build(); // <1>
+
+diferenciaAdminClient.updateConfig(build); // <2>
+----
+<1> Creates object with the new configuration parameters
+<2> Call `updateConfig` to update Diferencia
+
+To get the stats of Diferencia:
+
+[source, java]
+----
+final Stats stats = diferenciaAdminClient.stats(); // <1>
+
+boolean empty = stats.isEmpty(); // <2>
+List<Stat> allStats = stats.getStats(); // <3>
+----
+<1> Call `stats` endpoint
+<2> Checks if any error occurred
+<3> Gets the list of stats
