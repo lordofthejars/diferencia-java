@@ -1,0 +1,80 @@
+= Using AssertJ Assertion
+include::_attributes.adoc[]
+
+[#installation]
+== Installing
+
+To install Diferencia AassertJ Assertion you need to add `AssertJ` and `Diferencia AssertJ Assertions` dependencies on your build tool.
+
+=== Maven
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+    <groupId>com.lordofthejars</groupId>
+    <artifactId>diferencia-java-assertj</artifactId>
+    <version>${version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.10.0</version>
+    <scope>test</scope>
+</dependency>
+----
+
+=== Gradle
+
+[source, groovy]
+.build.gradle
+----
+testCompile "com.lordofthejars:diferencia-java-assertj:${version}"
+testCompile "org.assertj:assertj-core:3.10.0"
+----
+
+[#code-example]
+== Code Example
+
+The `AssertJ Assertion` main class is `com.lordofthejars.diferencia.assertj.DiferenciaAssertions` which is the responsible to implement the `assertThat` method to be used to assert that no errors has occurred in Diferencia.
+
+[source, java]
+.ExampleTest.java
+----
+@ClassRule // <1>
+public static DiferenciaRule diferenciaRule =
+    new DiferenciaRule("http://now.httpbin.org/",
+                       "http://now.httpbin.org/");
+
+@Test
+public void should_use_diferencia_to_detect_any_possible_regression()
+      throws IOException {
+    final String diferenciaUrl = diferenciaRule.getDiferenciaUrl();
+    sendRequest(diferenciaUrl, "/"); // <2>
+
+    DiferenciaAssertions.assertThat(diferenciaRule.getDiferencia())
+                            .hasNoErrors(); // <3>
+}
+----
+<1> This example uses `JUnit 4` but can be used with any other supported frameworks in the same way.
+<2> Send the request and forget the response. You can send as many as required.
+<3> Asserts that no errors have occurred.
+
+=== Filtering
+
+Sometimes you don't want to assert if there has been any error but just check a subset of them.
+For this purpose you have `withFilter` method.
+
+For example:
+
+[source, java]
+.ExampleTest.java
+----
+DiferenciaAssertions.assertThat(diferencia)
+            .withFilter("GET", "/") // <1>
+            .hasNoErrors())
+----
+<1> Sets Http method and path to filter.
+
+In previous example you are just asserting that any interaction on `GET` http method on root `/` path should contain no errors, but if there are any errors in other interactions, they will be ignored.

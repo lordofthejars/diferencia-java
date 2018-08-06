@@ -6,5 +6,6 @@ nav:
 - modules/core/nav.adoc
 - modules/junit/nav.adoc
 - modules/junit5/nav.adoc
+- modules/assertj/nav.adoc
 
 start_page: ROOT:index.adoc

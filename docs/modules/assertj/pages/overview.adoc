@@ -1,0 +1,6 @@
+= Diferencia AssertJ Assertions
+include::_attributes.adoc[]
+
+
+http://joel-costigliola.github.io/assertj/[Assertj] module offers a custom AssertJ assertion to validate that no errors between _primaries_ and _candidates_ (in case of noise detection, _secondaries_ as well) have occurred.
+In this way, you don't need to validate the error code of each interaction, you just need to execute all interactions and finally check that Diferencia has no errors.

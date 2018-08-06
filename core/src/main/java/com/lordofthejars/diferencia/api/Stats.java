@@ -23,6 +23,14 @@ public class Stats {
         return this.stats.isEmpty();
     }
 
+    public boolean containsError(final Stat stat) {
+        return stats.stream()
+            .filter(s -> s.getMethod().equals(stat.getMethod()) && s.getPath().equals(stat.getPath()))
+            .filter(s -> s.getErrors() > 0)
+            .findAny()
+            .isPresent();
+    }
+
     /**
      * Gets Stats from input stream and closes the stream at the end.
      * @param is where data is present. It is closed at the end.

@@ -72,6 +72,10 @@ public class DiferenciaRule extends ExternalResource {
         return this.diferencia.getDiferenciaAdminClient();
     }
 
+    public Diferencia getDiferencia() {
+        return diferencia;
+    }
+
     static boolean isAnnotatedWithRule(Description description) {
         boolean isRule = false;
         Field[] fields = description.getTestClass().getFields();

@@ -1,0 +1,5 @@
+* xref:overview.adoc[AssertJ Assertions]
+
+** xref:using.adoc[Using with AssertJ Assertions]
+*** xref:using.adoc#installation[Install]
+*** xref:using.adoc#code-example[Example]

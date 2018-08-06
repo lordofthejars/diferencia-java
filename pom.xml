@@ -27,6 +27,7 @@
     <module>core</module>
     <module>junit</module>
     <module>junit5</module>
+    <module>assertj</module>
   </modules>
 
   <dependencyManagement>
