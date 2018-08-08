@@ -2,6 +2,7 @@ package com.lordofthejars.diferencia.core;
 
 import com.lordofthejars.diferencia.api.DiferenciaConfiguration;
 import com.lordofthejars.diferencia.api.DiferenciaConfigurationUpdate;
+import com.lordofthejars.diferencia.api.DiferenciaMode;
 import com.lordofthejars.diferencia.api.Stat;
 import com.lordofthejars.diferencia.api.Stats;
 import com.lordofthejars.diferencia.gateway.DiferenciaAdminClient;
@@ -150,6 +151,21 @@ public class DiferenciaTest {
         final Stats stats = diferenciaAdminClient.stats();
         assertThat(stats.isEmpty()).isTrue();
 
+    }
+
+    @Test
+    public void should_read_current_configuration() throws IOException {
+
+        // Given
+        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+
+        // When
+        diferencia.start();
+        final DiferenciaConfiguration configuration = diferencia.getDiferenciaAdminClient().configuration();
+
+        assertThat(configuration.getNoiseDetection()).isEqualTo(false);
+        assertThat(configuration.getPrimary()).isEqualTo("http://now.httpbin.org/");
+        assertThat(configuration.getDifferenceMode()).isEqualTo(DiferenciaMode.STRICT);
     }
 
     @Test

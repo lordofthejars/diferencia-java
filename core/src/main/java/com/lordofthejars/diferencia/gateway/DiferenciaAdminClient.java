@@ -1,5 +1,6 @@
 package com.lordofthejars.diferencia.gateway;
 
+import com.lordofthejars.diferencia.api.DiferenciaConfiguration;
 import com.lordofthejars.diferencia.api.DiferenciaConfigurationUpdate;
 import com.lordofthejars.diferencia.api.Stats;
 import java.io.DataOutputStream;
@@ -34,6 +35,20 @@ public class DiferenciaAdminClient {
 
         return Stats.fromInputStream(con.getInputStream());
 
+    }
+
+    public DiferenciaConfiguration configuration() throws IOException {
+        URL endpoint = new URL(buildEndpoint(this.url, CONFIGURATION_ENDPOINT));
+        HttpURLConnection con = (HttpURLConnection) endpoint.openConnection();
+        con.setRequestMethod("GET");
+
+        int responseCode = con.getResponseCode();
+
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw new IOException(String.format("Error code is not OK but %d", responseCode));
+        }
+
+        return new DiferenciaConfiguration.Builder(con.getInputStream()).build();
     }
 
     public void updateConfig(DiferenciaConfigurationUpdate diferenciaConfigurationUpdate) throws IOException {

@@ -17,6 +17,21 @@ final DiferenciaAdminClient diferenciaAdminClient = diferencia
 ----
 <1> Returns an instance configured to interact with admin
 
+=== Get Configuration
+
+You can get the configuration of Diferencia:
+
+[source, java]
+----
+final DiferenciaConfiguration configuration = diferencia.getDiferenciaAdminClient()
+                                                                      .configuration(); // <1>
+
+String primary = configuration.getPrimary();
+----
+<1> Gets configuration parameters
+
+=== Update Configuration
+
 To update the configuration of Diferencia:
 
 [source, java]
@@ -30,6 +45,8 @@ diferenciaAdminClient.updateConfig(build); // <2>
 ----
 <1> Creates object with the new configuration parameters
 <2> Call `updateConfig` to update Diferencia
+
+=== Get Stats
 
 To get the stats of Diferencia:
 

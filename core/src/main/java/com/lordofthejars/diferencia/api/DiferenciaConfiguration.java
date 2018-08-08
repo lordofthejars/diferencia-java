@@ -1,9 +1,19 @@
 package com.lordofthejars.diferencia.api;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class DiferenciaConfiguration {
 
@@ -175,6 +185,94 @@ public class DiferenciaConfiguration {
         return arguments;
     }
 
+    public Integer getPort() {
+        return port;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public String getPrimary() {
+        return primary;
+    }
+
+    public String getSecondary() {
+        return secondary;
+    }
+
+    public String getCandidate() {
+        return candidate;
+    }
+
+    public String getStoreResults() {
+        return storeResults;
+    }
+
+    public DiferenciaMode getDifferenceMode() {
+        return differenceMode;
+    }
+
+    public Boolean getNoiseDetection() {
+        return noiseDetection;
+    }
+
+    public Boolean getAllowUnsafeOperations() {
+        return allowUnsafeOperations;
+    }
+
+    public Boolean getPrometheus() {
+        return prometheus;
+    }
+
+    public Integer getPrometheusPort() {
+        return prometheusPort;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public Boolean getHeaders() {
+        return headers;
+    }
+
+    public List<String> getIgnoreHeadersValues() {
+        return ignoreHeadersValues;
+    }
+
+    public List<String> getIgnoreValues() {
+        return ignoreValues;
+    }
+
+    public String getIgnoreValuesFile() {
+        return ignoreValuesFile;
+    }
+
+    public Boolean getInsecureSkipVerify() {
+        return insecureSkipVerify;
+    }
+
+    public String getCaCert() {
+        return caCert;
+    }
+
+    public String getClientCert() {
+        return clientCert;
+    }
+
+    public String getClientKey() {
+        return clientKey;
+    }
+
+    public Integer getAdminPort() {
+        return adminPort;
+    }
+
+    public List<String> getExtraArguments() {
+        return extraArguments;
+    }
+
     public int getPortOrDefault() {
         if (this.port == null) {
             return DEFAULT_PORT;
@@ -214,6 +312,56 @@ public class DiferenciaConfiguration {
 
     public static class Builder {
         private DiferenciaConfiguration diferenciaConfiguration;
+
+        public Builder(final InputStream inputStream) {
+            this.diferenciaConfiguration = new DiferenciaConfiguration();
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                final JsonValue parse = Json.parse(reader);
+                final JsonObject configuration = parse.asObject();
+
+                this.diferenciaConfiguration.primary = configuration.getString("primary", "");
+                this.diferenciaConfiguration.candidate = configuration.getString("candidate", "");
+                this.diferenciaConfiguration.secondary = configuration.getString("secondary", null);
+                this.diferenciaConfiguration.port = configuration.getInt("port", 0);
+                this.diferenciaConfiguration.prometheusPort = configuration.getInt("prometheusPort", 0);
+                this.diferenciaConfiguration.adminPort = configuration.getInt("adminPort", 0);
+                this.diferenciaConfiguration.serviceName = configuration.getString("serviceName", "");
+                this.diferenciaConfiguration.storeResults = configuration.getString("storeResults", null);
+                this.diferenciaConfiguration.differenceMode = DiferenciaMode.valueOf(configuration.getString("differenceMode", "").toUpperCase());
+                this.diferenciaConfiguration.noiseDetection = configuration.getBoolean("noiseDetection", false);
+
+                final JsonValue ignoreValues = configuration.get("ignoreValues");
+                if (ignoreValues != null) {
+                    this.diferenciaConfiguration.ignoreValues = toListOfString(ignoreValues);
+                }
+
+                this.diferenciaConfiguration.ignoreValuesFile = configuration.getString("ignoreValuesFile", null);
+                this.diferenciaConfiguration.headers = configuration.getBoolean("headers", false);
+
+                final JsonValue ignoreHeaders = configuration.get("ignoreHeadersValues");
+                if (ignoreHeaders != null) {
+                    this.diferenciaConfiguration.ignoreHeadersValues = toListOfString(ignoreHeaders);
+                }
+
+                diferenciaConfiguration.allowUnsafeOperations = configuration.getBoolean("allowUnsafeOperartions", false);
+                diferenciaConfiguration.insecureSkipVerify = configuration.getBoolean("insecureSkipVerify", false);
+                diferenciaConfiguration.caCert = configuration.getString("caCert", null);
+                diferenciaConfiguration.clientCert = configuration.getString("clientCert", null);
+                diferenciaConfiguration.clientKey = configuration.getString("clientKey", null);
+                diferenciaConfiguration.prometheus = configuration.getBoolean("prometheus", false);
+
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
+        private List<String> toListOfString(JsonValue value) {
+            Iterable<JsonValue> valueIterable = () -> value.asArray().iterator();
+
+            return StreamSupport.stream(valueIterable.spliterator(), false)
+                .map(element -> element.asString())
+                .collect(Collectors.toList());
+        }
 
         public Builder(String primary, String candidate) {
             this.diferenciaConfiguration = new DiferenciaConfiguration();
