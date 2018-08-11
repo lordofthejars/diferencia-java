@@ -2,18 +2,18 @@ package com.lordofthejars.diferencia.assertj;
 
 import com.lordofthejars.diferencia.api.Stat;
 import com.lordofthejars.diferencia.api.Stats;
-import com.lordofthejars.diferencia.core.Diferencia;
+import com.lordofthejars.diferencia.gateway.DiferenciaAdminClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.AbstractAssert;
 
-public class DiferenciaErrorCheckerAssert extends AbstractAssert<DiferenciaErrorCheckerAssert, Diferencia>  {
+public class DiferenciaErrorCheckerAssert extends AbstractAssert<DiferenciaErrorCheckerAssert, DiferenciaAdminClient>  {
 
     private final List<Stat> filterStats = new ArrayList<>();
 
-    public DiferenciaErrorCheckerAssert(Diferencia diferencia) {
-        super(diferencia, DiferenciaErrorCheckerAssert.class);
+    public DiferenciaErrorCheckerAssert(DiferenciaAdminClient diferenciaAdminClient) {
+        super(diferenciaAdminClient, DiferenciaErrorCheckerAssert.class);
     }
 
     public DiferenciaErrorCheckerAssert withFilter(String method, String path) {
@@ -26,7 +26,7 @@ public class DiferenciaErrorCheckerAssert extends AbstractAssert<DiferenciaError
         isNotNull();
 
         try {
-            final Stats stats = this.actual.getDiferenciaAdminClient().stats();
+            final Stats stats = this.actual.stats();
             if (filterStats.isEmpty() && !stats.isEmpty()) {
                 failWithMessage("%nExpecting:%n no errors but%n next errors found %s", stats.getStats());
             } else {
