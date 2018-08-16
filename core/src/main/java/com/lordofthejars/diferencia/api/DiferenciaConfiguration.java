@@ -7,11 +7,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -313,6 +316,116 @@ public class DiferenciaConfiguration {
     public static class Builder {
         private DiferenciaConfiguration diferenciaConfiguration;
 
+        public Builder(final DiferenciaConfiguration diferenciaConfiguration) {
+            this.diferenciaConfiguration = new DiferenciaConfiguration();
+            copyMatchingFields(diferenciaConfiguration, this.diferenciaConfiguration);
+        }
+
+        private static void copyMatchingFields( Object fromObj, Object toObj ) {
+            if ( fromObj == null || toObj == null )
+                throw new NullPointerException("Source and destination objects must be non-null");
+
+            Class fromClass = fromObj.getClass();
+            Class toClass = toObj.getClass();
+
+            Field[] fields = fromClass.getDeclaredFields();
+            for ( Field f : fields ) {
+                try {
+                    Field t = toClass.getDeclaredField( f.getName() );
+
+                    if ( t.getType() == f.getType() ) {
+                        if ( t.getType() == String.class
+                            || t.getType() == int.class || t.getType() == Integer.class
+                            || t.getType() == char.class || t.getType() == Character.class
+                            || t.getType() == boolean.class ||t.getType() == Boolean.class
+                            || t.getType().isEnum()) {
+                            f.setAccessible(true);
+                            t.setAccessible(true);
+                            t.set( toObj, f.get(fromObj) );
+                        } else if ( t.getType() == List.class  ) {
+                            f.setAccessible(true);
+                            t.setAccessible(true);
+                            final Object o = t.get(fromObj);
+                            if (o != null) {
+                                // Since we know that all are ArrayLists and of type string
+                                final List obj = (List) o;
+                                final List cloned = new ArrayList();
+                                cloned.addAll(obj);
+                                t.set(toObj, cloned);
+                            }
+                        }
+                    }
+                } catch (NoSuchFieldException ex) {
+                } catch (IllegalAccessException ex) {
+                }
+            }
+        }
+
+        public Builder(final Map<String, String> configuration) {
+            this.diferenciaConfiguration = new DiferenciaConfiguration();
+
+            this.diferenciaConfiguration.primary = configuration.getOrDefault("primary", "");
+            this.diferenciaConfiguration.candidate = configuration.getOrDefault("candidate", "");
+            this.diferenciaConfiguration.secondary = configuration.getOrDefault("secondary", null);
+
+            if (configuration.containsKey("port")) {
+                this.diferenciaConfiguration.port = Integer.valueOf(configuration.get("port"));
+            }
+
+            if (configuration.containsKey("prometheusPort")) {
+                this.diferenciaConfiguration.prometheusPort = Integer.valueOf(configuration.get("prometheusPort"));
+            }
+
+            if (configuration.containsKey("adminPort")) {
+                this.diferenciaConfiguration.adminPort = Integer.valueOf(configuration.get("adminPort"));
+            }
+
+            this.diferenciaConfiguration.serviceName = configuration.getOrDefault("serviceName", null);
+            this.diferenciaConfiguration.storeResults = configuration.getOrDefault("storeResults", null);
+
+            if (configuration.containsKey("differenceMode")) {
+                this.diferenciaConfiguration.differenceMode =
+                    DiferenciaMode.valueOf(configuration.get("differenceMode").toUpperCase());
+            }
+
+            if (configuration.containsKey("noiseDetection")) {
+                this.diferenciaConfiguration.noiseDetection =
+                    Boolean.valueOf(configuration.get("noiseDetection"));
+            }
+            if (configuration.containsKey("ignoreValues")) {
+                this.diferenciaConfiguration.ignoreValues = Arrays.asList(configuration.get("ignoreValues").split(",\\s*"));
+            }
+
+            this.diferenciaConfiguration.ignoreValuesFile = configuration.getOrDefault("ignoreValuesFile", null);
+
+            if (configuration.containsKey("headers")) {
+                this.diferenciaConfiguration.headers = Boolean.valueOf(configuration.get("headers"));
+            }
+
+            if (configuration.containsKey("ignoreHeadersValues")) {
+                this.diferenciaConfiguration.ignoreHeadersValues = Arrays.asList(configuration.get("ignoreHeadersValues").split(",\\s*"));
+            }
+
+            if (configuration.containsKey("allowUnsafeOperartions")) {
+                diferenciaConfiguration.allowUnsafeOperations =
+                    Boolean.valueOf(configuration.get("allowUnsafeOperartions"));
+            }
+
+            if (configuration.containsKey("insecureSkipVerify")) {
+                diferenciaConfiguration.insecureSkipVerify =
+                    Boolean.valueOf(configuration.get("insecureSkipVerify"));
+            }
+
+            diferenciaConfiguration.caCert = configuration.getOrDefault("caCert", null);
+            diferenciaConfiguration.clientCert = configuration.getOrDefault("clientCert", null);
+            diferenciaConfiguration.clientKey = configuration.getOrDefault("clientKey", null);
+
+            if (configuration.containsKey("prometheus")) {
+                diferenciaConfiguration.prometheus = Boolean.valueOf(configuration.get("prometheus"));
+            }
+
+        }
+
         public Builder(final InputStream inputStream) {
             this.diferenciaConfiguration = new DiferenciaConfiguration();
             try (final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -368,6 +481,16 @@ public class DiferenciaConfiguration {
             this.diferenciaConfiguration.primary = primary;
             this.diferenciaConfiguration.candidate = candidate;
 
+        }
+
+        public Builder withPrimary(String primary) {
+            diferenciaConfiguration.primary = primary;
+            return this;
+        }
+
+        public Builder withCandidate(String candidate) {
+            diferenciaConfiguration.candidate = candidate;
+            return this;
         }
 
         public Builder withPort(Integer port) {

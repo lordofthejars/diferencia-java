@@ -9,5 +9,5 @@ It gives you the next features:
 * [x] Start/Stop Diferencia without dealing directly with CLI.
 * [x] Specific Http Client to connect to Diferencia Rest API.
 * [x] Allows you to be used as plain Java. xref:core:overview.adoc[Core Module].
-* [x] Integration to Java frameworks such as xref:junit:overview.adoc[JUnit 4], xref:junit5:overview.adoc[JUnit 5], Maven, Gradle, Arquillian, ...
+* [x] Integration to Java frameworks such as xref:junit:overview.adoc[JUnit 4], xref:junit5:overview.adoc[JUnit 5], Maven, Gradle, xref:arquillian:overview.adoc[Arquillian], ...
 * [x] Integration with assertion library xref:assertj:overview.adoc[AssertJ].

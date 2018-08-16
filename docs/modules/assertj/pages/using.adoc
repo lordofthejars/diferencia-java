@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 [#installation]
 == Installing
 
-To install Diferencia AassertJ Assertion you need to add `AssertJ` and `Diferencia AssertJ Assertions` dependencies on your build tool.
+To install Diferencia AssertJ Assertion you need to add `AssertJ` and `Diferencia AssertJ Assertions` dependencies on your build tool.
 
 === Maven
 

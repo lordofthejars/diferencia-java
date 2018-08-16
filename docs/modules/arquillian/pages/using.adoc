@@ -1,0 +1,340 @@
+= Using Arquillian Diferencia
+include::_attributes.adoc[]
+
+[#installation]
+== Installing
+
+To install Arquillian Diferencia you need to add `Arquillian` dependencies (this would depend on if you are using _in-container_ or _standalone_ mode, containers, ...) and `Arquillian Diferencia` dependency on your build tool.
+
+[IMPORTANT]
+====
+In case of using the _in-container_ approach we recommend you using Arquillian Chameleon to manage containers in an easy way: https://github.com/arquillian/arquillian-container-chameleon
+====
+
+=== Maven
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>com.lordofthejars</groupId>
+  <artifactId>diferencia-java-arquillian-core</artifactId>
+  <version>${project.version}</version>
+  <scope>test</scope>
+</dependency>
+----
+
+=== Gradle
+
+[source, groovy]
+.build.gradle
+----
+testCompile "com.lordofthejars:diferencia-java-arquillian-core:${version}"
+----
+
+[#code-example]
+== Code Examples
+
+In this section, we are going to cover three examples, one in _standalone_ mode and two with _in-container_ mode.
+
+In case of _in-container_ mode, https://github.com/arquillian/arquillian-container-chameleon[Arquillian Chameleon] is used to simplify the configuration of Arquillian.
+
+[IMPORTANT]
+====
+Arquillian Diferencia only works when the test runs _in-container_ mode *as client* or in _standalone_ mode.
+
+In case of _in-container_ you need to annotate test class with `@RunAsClient` and annotate deployable method `@Deployment(testable = false)`
+====
+
+=== Standalone Mode
+
+In standalone mode, Arquillian does not deploy any service but assumes that other systems like build tools or CI/CD system already done it.
+For this reason, you need to configure Diferencia with primary, candidate (and secondary) URLs in `arquillian.xml`.
+
+==== Adding dependencies
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.12</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.jboss.arquillian.junit</groupId>
+  <artifactId>arquillian-junit-standalone</artifactId> <!--1-->
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>com.lordofthejars</groupId>
+  <artifactId>diferencia-java-arquillian-core</artifactId> <!--2-->
+  <version>${version}</version>
+  <scope>test</scope>
+</dependency>
+----
+<1> Arquillian Standalone mode dependency
+<2> Arquillian Diferencia dependency
+
+==== Configuring Arquillian Diferencia
+
+All Diferencia configuration properties are available in `arquillian.xml`.
+
+[source, xml]
+.src/test/resources/arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://jboss.org/schema/arquillian"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <extension qualifier="diferencia"> <!--1-->
+    <property name="primary">http://now.httpbin.org/</property> <!--2-->
+    <property name="candidate">http://now.httpbin.org/</property>
+  </extension>
+
+</arquillian>
+----
+<1> Configures Diferencia extension
+<2> Static URLs
+
+==== Test
+
+The test looks like any other Arquillian standalone test.
+Arquillian Diferencia starts Diferencia before running tests and stops it after the execution of them.
+
+[source, java]
+.HttpBinNowArquillianTest.java
+----
+@RunWith(Arquillian.class) // <1>
+public class HttpBinNowArquillianTest {
+
+    @DiferenciaUrl // <2>
+    URL diferencia;
+
+    @Test
+    public void should_use_diferencia_to_detect_any_possible_regression() throws IOException {
+
+        // Given
+        final OkHttpClient client = new OkHttpClient();
+
+        // When
+        final Response response = sendRequest(diferencia.toExternalForm(), "/", client); // <3>
+
+        // Then
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED); // <4>
+    }
+}
+----
+<1> Arquillian runner
+<2> Enrich Diferencia URL location to connect
+<3> Send request to Diferencia server
+<4> In this test a failure is expected
+
+=== In-Container Mode
+
+In-Container mode, Arquillian takes care of deploying and undeploying applications.
+Arquillian Diferencia integrates with it by allowing you to set as primary, candidate (and secondary) a deployment name, and URL to the service is resolved at runtime.
+
+[IMPORTANT]
+====
+In case of the _In-container_ you need to annotate test class with `@RunAsClient` and annotate deployable method `@Deployment(testable = false)`
+====
+
+.About Auto-Resolution
+****
+If your test only contains one deployment method, this deployment will be considered to be the _candidate_ so you don't need to specify anything in `candidate configuration property` since it is automatically resolved.
+****
+
+==== Adding dependencies
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.12</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.arquillian.container</groupId>
+  <artifactId>arquillian-chameleon-junit-container-starter</artifactId> <!--1-->
+  <version>1.0.0.CR2</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>com.lordofthejars</groupId>
+  <artifactId>diferencia-java-arquillian-core</artifactId> <!--2-->
+  <version>${project.version}</version>
+  <scope>test</scope>
+</dependency>
+----
+<1> Arquillian Chameleon dependency for in-container tests
+<2> Arquillian Diferencia dependency
+
+==== Configuring Arquillian Diferencia with One Deployment
+
+All Diferencia configuration properties are available in `arquillian.xml`.
+
+[source, xml]
+.src/test/resources/arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://jboss.org/schema/arquillian"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <extension qualifier="diferencia"> <!--1-->
+    <property name="primary">http://mypublicsite.com/</property> <!--2-->
+    <property name="port">9090</property> <!--3-->
+  </extension> <!--4-->
+
+</arquillian>
+----
+<1> Configures Diferencia extension
+<2> Static URL for primary
+<3> Port where Diferencia server is started
+<4> No candidate set because test only contains one deployment to be used as candidate
+
+==== Test with One Deployment
+
+In the next test, Diferencia makes a request to defined primary host at `arquillian.xml` (`http://mypublicsite.com/`) and the service defined at `deployServiceV11()` method.
+
+[source, java]
+.DiferenciaContainerTest.java
+----
+@RunWith(ArquillianChameleon.class) // <1>
+@ChameleonTarget("wildfly:11.0.0.Final:managed") // <2>
+@RunAsClient // <3>
+public class DiferenciaContainerTest {
+
+    @Deployment(testable = false) // <4>
+    public static WebArchive deployServiceV11() {
+        return ShrinkWrap.create(WebArchive.class)
+            .addClasses(V1Application.class, V11Resource.class); // <5>
+    }
+
+    @DiferenciaUrl
+    URL diferencia;
+
+    @Test
+    public void should_fail_if_responses_are_different() throws IOException {
+        // Given
+        final OkHttpClient client = new OkHttpClient();
+
+        // When
+        final Response response = sendRequest(diferencia.toExternalForm(), "/v1/hello", client); // <6>
+
+        // Then
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);
+    }
+}
+----
+<1> Arquillian Chameleon runner
+<2> Defines the container where the serivce is deployed
+<3> `RunAsClient` is mandatory in in-container tests for working with Diferencia
+<4> `testeable = false` is mandatory in in-container tests for working with Diferencia
+<5> Bundle of the service
+<6> Send request to Diferencia server
+
+When executing this test, Arquillian Diferencia starts Diferencia server and resend request to _primary_ and _candidate_.
+The important thing is that in this case _candidate_ URL is auto-resolved to the service deployed by Arquillian.
+
+==== Configuring Arquillian Diferencia with Multiple Deployments
+
+[source, xml]
+.src/test/resources/arquillian.xml
+----
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://jboss.org/schema/arquillian"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <extension qualifier="diferencia">
+    <property name="primary">v1</property> <!--1-->
+    <property name="candidate">v11</property> <!--2-->
+    <property name="port">9090</property>
+  </extension>
+
+</arquillian>
+----
+<1> Primary field is resolved with a deployment called `v1`
+<2> Candidate field is resolved with a deployment called `v11`
+
+==== Test with Multiple Deployments
+
+[source, java]
+.DiferenciaContainerTest.java
+----
+@RunWith(ArquillianChameleon.class)
+@ChameleonTarget("wildfly:11.0.0.Final:managed")
+@RunAsClient
+public class DiferenciaContainerTest {
+
+    @Deployment(testable = false, name = "v1") // <1>
+    public static WebArchive deployServiceV1() {
+        return ShrinkWrap.create(WebArchive.class)
+            .... // <2>
+    }
+
+    @Deployment(testable = false, name = "v11") // <3>
+    public static WebArchive deployServiceV11() {
+        return ShrinkWrap.create(WebArchive.class)
+            .addClasses(V1Application.class, V11Resource.class);
+    }
+
+    @DiferenciaUrl
+    URL diferencia;
+
+    @Test
+    public void should_fail_if_responses_are_different() throws IOException {
+        // Given
+        final OkHttpClient client = new OkHttpClient();
+
+        // When
+        final Response response = sendRequest(diferencia.toExternalForm(), "/v1/hello", client); // <3>
+
+        // Then
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);
+    }
+}
+----
+<1> Primary deployment
+<2> `WebArchive` could be an specific version of `.war` file from a concrete artifact repository
+<3> Candidate deployment
+
+When executing this test, Arquillian Diferencia starts Diferencia server and resend the request to _primary_ and _candidate_.
+The important thing is that in this case _primary_ and _candidate_ URLs are auto-resolved to the service deployed by Arquillian.
+
+== Enrichers
+
+Arquillian Diferencia offers three kinds of test enrichers:
+
+Inject `Diferencia` instance.
+
+[source, java]
+----
+@ArquillianResource
+Diferencia diferencia
+----
+
+Inject `DiferenciaAdminClient`:
+
+[source, java]
+----
+@ArquillianResource
+DiferenciaAdminClient client;
+----
+
+Inject Diferencia `URL`:
+
+[source, java]
+----
+@DiferenciaUrl
+URL diferencia;
+----

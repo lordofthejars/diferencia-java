@@ -1,0 +1,6 @@
+= Arquillian Diferencia
+include::_attributes.adoc[]
+
+
+http://arquillian.org/[Arquillian] module offers an integration to Arquillian project with _in-container_ and _standalone_ modes, as well as test enrichers and integration with microd-eployments.
+Thanks of this integration you can use the power of Arquillian (and Arquillian cosmos) with Diferencia.

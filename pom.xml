@@ -28,6 +28,7 @@
     <module>junit</module>
     <module>junit5</module>
     <module>assertj</module>
+    <module>arquillian</module>
   </modules>
 
   <dependencyManagement>

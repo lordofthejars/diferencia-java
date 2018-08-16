@@ -1,7 +1,10 @@
 package com.lordofthejars.diferencia.core;
 
 import com.lordofthejars.diferencia.api.DiferenciaConfiguration;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +44,7 @@ class DiferenciaExecutor {
                 .directory(binary.getParent().toFile())
                 .start();
         } catch (IOException e) {
-            throw new IllegalStateException("Could not start Hoverfly process", e);
+            throw new IllegalStateException("Could not start Diferencia process", e);
         }
     }
 
@@ -62,4 +65,15 @@ class DiferenciaExecutor {
             executorService.shutdownNow();
         }
     }
+
+    String checkForFailure() {
+        if (this.startedProcess.exitValue() > 0) {
+            final InputStream errorStream = this.startedProcess.getErrorStream();
+            String errorContent = new BufferedReader(new InputStreamReader(errorStream)).lines().collect(Collectors.joining(System.lineSeparator()));
+            return  errorContent;
+        }
+
+        return "";
+    }
+
 }

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.awaitility.core.ConditionTimeoutException;
 
 import static org.awaitility.Awaitility.given;
 
@@ -63,8 +64,12 @@ public class Diferencia implements AutoCloseable {
     }
 
     private void waitForDiferenciaToBecomeHealthy() {
-        given().ignoreExceptions()
-            .await().atMost(10, TimeUnit.SECONDS).until(diferenciaClient::healthy);
+        try {
+            given().ignoreExceptions()
+                .await().atMost(10, TimeUnit.SECONDS).until(diferenciaClient::healthy);
+        } catch (ConditionTimeoutException e) {
+            throw new IllegalStateException(diferenciaExecutor.checkForFailure(), e);
+        }
     }
 
     private DiferenciaAdminClient createDiferenciaAdminClient() {
