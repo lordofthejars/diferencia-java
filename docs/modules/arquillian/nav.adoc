@@ -2,4 +2,8 @@
 
 ** xref:using.adoc[Using with Arquillian Diferencia]
 *** xref:using.adoc#installation[Install]
-*** xref:using.adoc#code-example[Example]
+
+** xref:using.adoc#code-example[Example]
+*** xref:using.adoc#standalone-mode[Standalone Mode]
+*** xref:using.adoc#incontainer-mode[In-Container Mode]
+*** xref:using.adoc#enrichers[Enrichers]

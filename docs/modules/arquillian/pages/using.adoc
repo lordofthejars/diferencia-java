@@ -46,6 +46,7 @@ Arquillian Diferencia only works when the test runs _in-container_ mode *as clie
 In case of _in-container_ you need to annotate test class with `@RunAsClient` and annotate deployable method `@Deployment(testable = false)`
 ====
 
+[#standalone-mode]
 === Standalone Mode
 
 In standalone mode, Arquillian does not deploy any service but assumes that other systems like build tools or CI/CD system already done it.
@@ -133,6 +134,7 @@ public class HttpBinNowArquillianTest {
 <3> Send request to Diferencia server
 <4> In this test a failure is expected
 
+[#incontainer-mode]
 === In-Container Mode
 
 In-Container mode, Arquillian takes care of deploying and undeploying applications.
@@ -311,6 +313,7 @@ public class DiferenciaContainerTest {
 When executing this test, Arquillian Diferencia starts Diferencia server and resend the request to _primary_ and _candidate_.
 The important thing is that in this case _primary_ and _candidate_ URLs are auto-resolved to the service deployed by Arquillian.
 
+[#enrichers]
 == Enrichers
 
 Arquillian Diferencia offers three kinds of test enrichers:
