@@ -138,6 +138,10 @@ public class DiferenciaExtension implements BeforeAllCallback, AfterAllCallback,
             builder.withIgnoreHeadersValues(Arrays.asList(config.ignoreHeadersValues()));
         }
 
+        if (config.forcePlainText()) {
+            builder.withForcePlainText(config.forcePlainText());
+        }
+
         return builder.build();
     }
 

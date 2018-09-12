@@ -26,6 +26,7 @@ public @interface DiferenciaConfig {
     String clientCert() default "";
     String clientKey() default "";
     int adminPort() default 0;
+    boolean forcePlainText() default false;
 
     String[] extraArguments() default {};
 

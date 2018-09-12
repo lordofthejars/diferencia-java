@@ -45,6 +45,7 @@ public class DiferenciaConfiguration {
     private static final String CA_CERT = "--caCert";
     private static final String CLIENT_CERT = "--clientCert";
     private static final String CLIENT_KEY = "--clientKey";
+    private static final String FORCE_PLAIN_TEXT = "--forcePlainText";
 
     private Integer port;
     private String serviceName;
@@ -67,6 +68,7 @@ public class DiferenciaConfiguration {
     private String clientCert;
     private String clientKey;
     private Integer adminPort;
+    private Boolean forcePlainText;
 
     private List<String> extraArguments = null;
 
@@ -181,6 +183,11 @@ public class DiferenciaConfiguration {
             arguments.add(clientKey);
         }
 
+        if (forcePlainText != null) {
+            arguments.add(FORCE_PLAIN_TEXT);
+            arguments.add(String.valueOf(forcePlainText));
+        }
+
         if (extraArguments != null) {
             arguments.addAll(extraArguments);
         }
@@ -270,6 +277,10 @@ public class DiferenciaConfiguration {
 
     public Integer getAdminPort() {
         return adminPort;
+    }
+
+    public Boolean getForcePlainText() {
+        return forcePlainText;
     }
 
     public List<String> getExtraArguments() {
@@ -424,6 +435,10 @@ public class DiferenciaConfiguration {
                 diferenciaConfiguration.prometheus = Boolean.valueOf(configuration.get("prometheus"));
             }
 
+            if (configuration.containsKey("forcePlainText")) {
+                diferenciaConfiguration.forcePlainText = Boolean.valueOf(configuration.get("forcePlainText"));
+            }
+
         }
 
         public Builder(final InputStream inputStream) {
@@ -462,6 +477,7 @@ public class DiferenciaConfiguration {
                 diferenciaConfiguration.clientCert = configuration.getString("clientCert", null);
                 diferenciaConfiguration.clientKey = configuration.getString("clientKey", null);
                 diferenciaConfiguration.prometheus = configuration.getBoolean("prometheus", false);
+                diferenciaConfiguration.forcePlainText = configuration.getBoolean("forcePlainText", false);
 
             } catch (IOException e) {
                 throw new IllegalStateException(e);
@@ -585,6 +601,11 @@ public class DiferenciaConfiguration {
 
         public Builder withClientKey(Path clientKey) {
             diferenciaConfiguration.clientKey = clientKey.toAbsolutePath().toString();
+            return this;
+        }
+
+        public Builder withForcePlainText(Boolean forcePlainText) {
+            diferenciaConfiguration.forcePlainText = forcePlainText;
             return this;
         }
 
