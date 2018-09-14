@@ -10,6 +10,31 @@
   <packaging>pom</packaging>
 
   <name>diferencia-java</name>
+  <description>Diferencia integration in Java.</description>
+
+  <url>https://github.com/lordofthejars/diferencia-java</url>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/lordofthejars/diferencia-java/issues</url>
+  </issueManagement>
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git@github.com:lordofthejars/diferencia-java.git</connection>
+    <developerConnection>scm:git:git@github.com:lordofthejars/diferencia-java.git</developerConnection>
+    <url>scm:git:git@github.com:lordofthejars/diferencia-java.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>asotobu</id>
+      <name>Alex Soto Bueno</name>
+      <email>asotobu@gmail.com</email>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,6 +87,22 @@
   </dependencyManagement>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>
@@ -96,4 +137,11 @@
       </plugins>
     </pluginManagement>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>bintray-lordofthejars-maven</id>
+      <name>lordofthejars-maven</name>
+      <url>https://api.bintray.com/maven/lordofthejars/maven/diferencia-java/;publish=1</url>
+    </repository>
+  </distributionManagement>
 </project>
