@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.impl.enricher.resource.URLResourceProvider;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.spi.ServiceLoader;
+import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ public class DiferenciaClassLifecycleTest {
     @Before
     public void setupMocks() throws MalformedURLException {
 
-        when(urlResourceProviderServiceLoader.onlyOne(URLResourceProvider.class))
+        when(urlResourceProviderServiceLoader.onlyOne(ResourceProvider.class, URLResourceProvider.class))
             .thenReturn(urlResourceProvider);
 
         when(urlResourceProvider.lookup(any(), any())).thenReturn(new URL("http://localhost"));
@@ -46,6 +47,7 @@ public class DiferenciaClassLifecycleTest {
 
         when(urlResolverServiceLoader.onlyOne(DiferenciaConfigurationUrlResolver.class))
             .thenReturn(inContainerDiferenciaConfigurationUrlResolverService);
+
     }
 
     @Test

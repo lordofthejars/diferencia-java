@@ -50,6 +50,12 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>0</forkCount>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
         <version>3.1.0</version>
@@ -68,7 +74,7 @@
         <executions>
           <execution>
             <id>install-diferencia-mac</id>
-            <phase>compile</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>wget</goal>
             </goals>
@@ -80,7 +86,7 @@
           </execution>
           <execution>
             <id>install-diferencia-linux</id>
-            <phase>compile</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>wget</goal>
             </goals>
@@ -92,7 +98,7 @@
           </execution>
           <execution>
             <id>install-diferencia-win</id>
-            <phase>compile</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>wget</goal>
             </goals>
