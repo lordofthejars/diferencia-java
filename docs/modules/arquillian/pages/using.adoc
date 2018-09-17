@@ -6,6 +6,23 @@ include::_attributes.adoc[]
 
 To install Arquillian Diferencia you need to add `Arquillian` dependencies (this would depend on if you are using _in-container_ or _standalone_ mode, containers, ...) and `Arquillian Diferencia` dependency on your build tool.
 
+For now Diferencia is released in `jcenter` but in near future will be released in Maven central as well.
+
+[source, xml]
+.pom.xml
+----
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>bintray</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+----
+
 [IMPORTANT]
 ====
 In case of using the _in-container_ approach we recommend you using Arquillian Chameleon to manage containers in an easy way: https://github.com/arquillian/arquillian-container-chameleon
@@ -17,7 +34,7 @@ In case of using the _in-container_ approach we recommend you using Arquillian C
 .pom.xml
 ----
 <dependency>
-  <groupId>com.lordofthejars</groupId>
+  <groupId>com.lordofthejars.diferencia</groupId>
   <artifactId>diferencia-java-arquillian-core</artifactId>
   <version>${project.version}</version>
   <scope>test</scope>
@@ -29,7 +46,7 @@ In case of using the _in-container_ approach we recommend you using Arquillian C
 [source, groovy]
 .build.gradle
 ----
-testCompile "com.lordofthejars:diferencia-java-arquillian-core:${version}"
+testCompile "com.lordofthejars.diferencia:diferencia-java-arquillian-core:${version}"
 ----
 
 [#code-example]
@@ -69,7 +86,7 @@ For this reason, you need to configure Diferencia with primary, candidate (and s
   <scope>test</scope>
 </dependency>
 <dependency>
-  <groupId>com.lordofthejars</groupId>
+  <groupId>com.lordofthejars.diferencia</groupId>
   <artifactId>diferencia-java-arquillian-core</artifactId> <!--2-->
   <version>${version}</version>
   <scope>test</scope>
@@ -163,12 +180,24 @@ If your test only contains one deployment method, this deployment will be consid
 </dependency>
 <dependency>
   <groupId>org.arquillian.container</groupId>
-  <artifactId>arquillian-chameleon-junit-container-starter</artifactId> <!--1-->
+  <artifactId>arquillian-container-chameleon</artifactId>
   <version>1.0.0.CR2</version>
   <scope>test</scope>
 </dependency>
 <dependency>
-  <groupId>com.lordofthejars</groupId>
+  <groupId>org.jboss.arquillian.junit</groupId>
+  <artifactId>arquillian-junit-container</artifactId>
+  <version>1.2.0.Final</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.arquillian.container</groupId>
+  <artifactId>arquillian-container-chameleon-runner</artifactId> <!--1-->
+  <version>1.0.0.CR2</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>com.lordofthejars.diferencia</groupId>
   <artifactId>diferencia-java-arquillian-core</artifactId> <!--2-->
   <version>${project.version}</version>
   <scope>test</scope>

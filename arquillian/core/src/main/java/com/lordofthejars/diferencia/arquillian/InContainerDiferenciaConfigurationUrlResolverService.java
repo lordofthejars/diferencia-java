@@ -36,9 +36,7 @@ public class InContainerDiferenciaConfigurationUrlResolverService implements Dif
             OperateOnDeployment[] operateOnDeployments = createOperateOnDeployment(name);
             ArquillianResource arquillianResource = createArquillianResource();
 
-            System.out.println("Before");
             URL u = (URL) urlResourceProvider.lookup(arquillianResource, operateOnDeployments);
-            System.out.println("After");
             return u;
 
         }

@@ -6,13 +6,30 @@ include::_attributes.adoc[]
 
 To install Diferencia Java Core you only need to add next dependency on your build tool.
 
+For now Diferencia is released in `jcenter` but in near future will be released in Maven central as well.
+
+[source, xml]
+.pom.xml
+----
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>bintray</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+----
+
 === Maven
 
 [source, xml]
 .pom.xml
 ----
 <dependency>
-    <groupId>com.lordofthejars</groupId>
+    <groupId>com.lordofthejars.diferencia</groupId>
     <artifactId>diferencia-java-core</artifactId>
     <version>${version}</version>
 </dependency>
@@ -23,7 +40,7 @@ To install Diferencia Java Core you only need to add next dependency on your bui
 [source, groovy]
 .build.gradle
 ----
-compile "com.lordofthejars:diferencia-java-core:${version}"
+compile "com.lordofthejars.diferencia:diferencia-java-core:${version}"
 ----
 
 [#code-example]

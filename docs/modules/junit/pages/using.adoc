@@ -6,13 +6,30 @@ include::_attributes.adoc[]
 
 To install Diferencia Java JUnit you need to add `JUnit 4` and `Diferencia JUnit` dependencies on your build tool.
 
+For now Diferencia is released in `jcenter` but in near future will be released in Maven central as well.
+
+[source, xml]
+.pom.xml
+----
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>bintray</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+----
+
 === Maven
 
 [source, xml]
 .pom.xml
 ----
 <dependency>
-    <groupId>com.lordofthejars</groupId>
+    <groupId>com.lordofthejars.diferencia</groupId>
     <artifactId>diferencia-java-junit</artifactId>
     <version>${version}</version>
     <scope>test</scope>
@@ -30,7 +47,7 @@ To install Diferencia Java JUnit you need to add `JUnit 4` and `Diferencia JUnit
 [source, groovy]
 .build.gradle
 ----
-testCompile "com.lordofthejars:diferencia-java-junit:${version}"
+testCompile "com.lordofthejars.diferencia:diferencia-java-junit:${version}"
 testCompile "junit:junit:4.12"
 ----
 

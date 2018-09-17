@@ -6,13 +6,30 @@ include::_attributes.adoc[]
 
 To install Diferencia AssertJ Assertion you need to add `AssertJ` and `Diferencia AssertJ Assertions` dependencies on your build tool.
 
+For now Diferencia is released in `jcenter` but in near future will be released in Maven central as well.
+
+[source, xml]
+.pom.xml
+----
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>bintray</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+----
+
 === Maven
 
 [source, xml]
 .pom.xml
 ----
 <dependency>
-    <groupId>com.lordofthejars</groupId>
+    <groupId>com.lordofthejars.diferencia</groupId>
     <artifactId>diferencia-java-assertj</artifactId>
     <version>${version}</version>
     <scope>test</scope>
@@ -30,7 +47,7 @@ To install Diferencia AssertJ Assertion you need to add `AssertJ` and `Diferenci
 [source, groovy]
 .build.gradle
 ----
-testCompile "com.lordofthejars:diferencia-java-assertj:${version}"
+testCompile "com.lordofthejars.diferencia:diferencia-java-assertj:${version}"
 testCompile "org.assertj:assertj-core:3.10.0"
 ----
 
