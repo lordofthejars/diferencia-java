@@ -46,6 +46,7 @@ public class DiferenciaConfiguration {
     private static final String CLIENT_CERT = "--clientCert";
     private static final String CLIENT_KEY = "--clientKey";
     private static final String FORCE_PLAIN_TEXT = "--forcePlainText";
+    private static final String MIRRORING = "--mirroring";
 
     private Integer port;
     private String serviceName;
@@ -69,6 +70,7 @@ public class DiferenciaConfiguration {
     private String clientKey;
     private Integer adminPort;
     private Boolean forcePlainText;
+    private Boolean mirroring;
 
     private List<String> extraArguments = null;
 
@@ -188,6 +190,11 @@ public class DiferenciaConfiguration {
             arguments.add(String.valueOf(forcePlainText));
         }
 
+        if (mirroring != null) {
+            arguments.add(MIRRORING);
+            arguments.add(String.valueOf(mirroring));
+        }
+
         if (extraArguments != null) {
             arguments.addAll(extraArguments);
         }
@@ -281,6 +288,10 @@ public class DiferenciaConfiguration {
 
     public Boolean getForcePlainText() {
         return forcePlainText;
+    }
+
+    public Boolean getMirroring() {
+        return mirroring;
     }
 
     public List<String> getExtraArguments() {
@@ -439,6 +450,10 @@ public class DiferenciaConfiguration {
                 diferenciaConfiguration.forcePlainText = Boolean.valueOf(configuration.get("forcePlainText"));
             }
 
+            if (configuration.containsKey("mirroring")) {
+                diferenciaConfiguration.mirroring = Boolean.valueOf(configuration.get("mirroring"));
+            }
+
         }
 
         public Builder(final InputStream inputStream) {
@@ -457,6 +472,7 @@ public class DiferenciaConfiguration {
                 this.diferenciaConfiguration.storeResults = configuration.getString("storeResults", null);
                 this.diferenciaConfiguration.differenceMode = DiferenciaMode.valueOf(configuration.getString("differenceMode", "").toUpperCase());
                 this.diferenciaConfiguration.noiseDetection = configuration.getBoolean("noiseDetection", false);
+                this.diferenciaConfiguration.mirroring = configuration.getBoolean("mirroring", false);
 
                 final JsonValue ignoreValues = configuration.get("ignoreValues");
                 if (ignoreValues != null) {
@@ -611,6 +627,11 @@ public class DiferenciaConfiguration {
 
         public Builder withExtraArguments(List<String> arguments) {
             diferenciaConfiguration.extraArguments = arguments;
+            return this;
+        }
+
+        public Builder withMirroring(Boolean mirroring) {
+            diferenciaConfiguration.mirroring = mirroring;
             return this;
         }
 

@@ -8,8 +8,12 @@ import com.lordofthejars.diferencia.api.Stats;
 import com.lordofthejars.diferencia.gateway.DiferenciaAdminClient;
 import com.lordofthejars.diferencia.gateway.DiferenciaClient;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -60,6 +64,31 @@ public class DiferenciaTest {
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
         final Response response = sendRequest(diferenciaUrl, "/info/ping");
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
+
+    @Test
+    public void should_enable_mirroring_mode() throws IOException {
+
+        // Precondition
+        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+
+        // Given
+        final DiferenciaConfiguration.Builder configurationBuilder =
+            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
+                .withMirroring(true);
+        diferencia = new Diferencia(configurationBuilder);
+
+        // When
+        diferencia.start();
+
+        // Then
+        final String diferenciaUrl = diferencia.getDiferenciaUrl();
+        final Response response = sendRequest(diferenciaUrl, "/");
+
+        final JsonReader jsonReader = Json.createReader(new StringReader(response.body().string()));
+        final JsonObject body = jsonReader.readObject();
+        assertThat(body.getJsonObject("now")).isNotNull();
+
     }
 
     @Test

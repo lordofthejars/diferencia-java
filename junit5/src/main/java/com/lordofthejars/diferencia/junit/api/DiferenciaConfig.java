@@ -27,6 +27,7 @@ public @interface DiferenciaConfig {
     String clientKey() default "";
     int adminPort() default 0;
     boolean forcePlainText() default false;
+    boolean mirroring() default false;
 
     String[] extraArguments() default {};
 
