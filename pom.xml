@@ -40,7 +40,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <diferencia.version>0.4.0</diferencia.version>
+    <diferencia.version>0.5.0</diferencia.version>
     <assertj.version>3.10.0</assertj.version>
     <mockito.version>2.19.1</mockito.version>
     <awaitility.version>3.1.1</awaitility.version>
