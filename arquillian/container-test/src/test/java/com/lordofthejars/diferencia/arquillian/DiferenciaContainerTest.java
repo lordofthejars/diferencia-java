@@ -14,6 +14,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(ArquillianChameleon.class)
 @ChameleonTarget("wildfly:11.0.0.Final:managed")
 @RunAsClient
+@Ignore
 public class DiferenciaContainerTest {
 
     @Deployment(testable = false, name = "v1")
