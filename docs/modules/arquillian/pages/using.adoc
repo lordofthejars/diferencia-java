@@ -6,23 +6,6 @@ include::_attributes.adoc[]
 
 To install Arquillian Diferencia you need to add `Arquillian` dependencies (this would depend on if you are using _in-container_ or _standalone_ mode, containers, ...) and `Arquillian Diferencia` dependency on your build tool.
 
-For now Diferencia is released in `jcenter` but in near future will be released in Maven central as well.
-
-[source, xml]
-.pom.xml
-----
-<repositories>
-    <repository>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-        <id>central</id>
-        <name>bintray</name>
-        <url>https://jcenter.bintray.com</url>
-    </repository>
-</repositories>
-----
-
 [IMPORTANT]
 ====
 In case of using the _in-container_ approach we recommend you using Arquillian Chameleon to manage containers in an easy way: https://github.com/arquillian/arquillian-container-chameleon
