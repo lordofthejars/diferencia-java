@@ -12,6 +12,7 @@ public class DiferenciaConfigurationUpdate {
     private String candidate;
     private String noiseDetection;
     private String mode;
+    private String returnResult;
 
     private DiferenciaConfigurationUpdate() {
     }
@@ -74,6 +75,11 @@ public class DiferenciaConfigurationUpdate {
 
         public Builder withMode(DiferenciaMode diferenciaMode) {
             this.diferenciaConfigurationUpdate.mode = diferenciaMode.getName();
+            return this;
+        }
+
+        public Builder withReturnResult(boolean returnResult) {
+            this.diferenciaConfigurationUpdate.returnResult = String.valueOf(returnResult);
             return this;
         }
 

@@ -28,6 +28,7 @@ public @interface DiferenciaConfig {
     int adminPort() default 0;
     boolean forcePlainText() default false;
     boolean mirroring() default false;
+    boolean returnResult() default false;
 
     String[] extraArguments() default {};
 

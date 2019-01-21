@@ -146,6 +146,10 @@ public class DiferenciaExtension implements BeforeAllCallback, AfterAllCallback,
             builder.withForcePlainText(config.forcePlainText());
         }
 
+        if (config.returnResult()) {
+            builder.withReturnResult(config.returnResult());
+        }
+
         return builder.build();
     }
 

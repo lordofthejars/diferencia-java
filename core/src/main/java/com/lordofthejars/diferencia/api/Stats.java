@@ -52,8 +52,11 @@ public class Stats {
                 final String method = endpoint.getString("method", "");
                 final String path = endpoint.getString("path", "");
                 final int errors = stat.getInt("errors", 0);
+                final int success = stat.getInt("success", 0);
+                final double averagePrimaryDuration = stat.getDouble("averagePrimaryDuration", 0.0);
+                final double averageCandidateDuration = stat.getDouble("averageCandidateDuration", 0.0);
 
-                currentStats.stats.add(new Stat(method, path, errors));
+                currentStats.stats.add(new Stat(method, path, errors, success, averagePrimaryDuration, averageCandidateDuration));
             }
         }
 

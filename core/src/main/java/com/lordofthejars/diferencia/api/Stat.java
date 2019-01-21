@@ -7,11 +7,17 @@ public class Stat {
     private final String method;
     private final String path;
     private final int errors;
+    private final int success;
+    private final double averagePrimaryDuration;
+    private final double averageCandidateDuration;
 
-    public Stat(String method, String path, int errors) {
+    public Stat(String method, String path, int errors, int success, double averagePrimaryDuration, double averageCandidateDuration) {
         this.method = method;
         this.path = path;
         this.errors = errors;
+        this.success = success;
+        this.averageCandidateDuration = averageCandidateDuration;
+        this.averagePrimaryDuration = averagePrimaryDuration;
     }
 
     public String getMethod() {
@@ -24,6 +30,18 @@ public class Stat {
 
     public int getErrors() {
         return errors;
+    }
+
+    public int getSuccess() {
+        return success;
+    }
+
+    public double getAverageCandidateDuration() {
+        return averageCandidateDuration;
+    }
+
+    public double getAveragePrimaryDuration() {
+        return averagePrimaryDuration;
     }
 
     @Override
@@ -47,6 +65,9 @@ public class Stat {
         sb.append("method='").append(method).append('\'');
         sb.append(", path='").append(path).append('\'');
         sb.append(", errors=").append(errors);
+        sb.append(", success=").append(success);
+        sb.append(", averagePrimaryDuration=").append(averagePrimaryDuration);
+        sb.append(", averageCandidateDuration=").append(averageCandidateDuration);
         sb.append('}');
         return sb.toString();
     }

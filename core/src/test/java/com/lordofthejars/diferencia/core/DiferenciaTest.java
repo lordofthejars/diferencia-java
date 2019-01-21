@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
+import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -157,7 +158,22 @@ public class DiferenciaTest {
     }
 
     @Test
-    public void should_return_zero_elements_in_stat_api_if_no_regression_occurred() throws IOException {
+    public void should_read_current_configuration() throws IOException {
+
+        // Given
+        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+
+        // When
+        diferencia.start();
+        final DiferenciaConfiguration configuration = diferencia.getDiferenciaAdminClient().configuration();
+
+        assertThat(configuration.getNoiseDetection()).isEqualTo(false);
+        assertThat(configuration.getPrimary()).isEqualTo("http://now.httpbin.org/");
+        assertThat(configuration.getDifferenceMode()).isEqualTo(DiferenciaMode.STRICT);
+    }
+
+    @Test
+    public void should_return_success_in_stat_api_if_no_regression_occurred() throws IOException {
 
         // Precondition
         assumeTrue(isUpAndRunning("http://now.httpbin.org"));
@@ -176,25 +192,43 @@ public class DiferenciaTest {
 
         // Then
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
+
         final DiferenciaAdminClient diferenciaAdminClient = diferencia.getDiferenciaAdminClient();
         final Stats stats = diferenciaAdminClient.stats();
-        assertThat(stats.isEmpty()).isTrue();
+        final List<Stat> statList = stats.getStats();
+        assertThat(statList).hasSize(1);
+        Stat stat = statList.get(0);
+
+        assertThat(stat.getMethod()).isEqualTo("GET");
+        assertThat(stat.getPath()).isEqualTo("/");
+        assertThat(stat.getSuccess()).isEqualTo(1);
+        assertThat(stat.getErrors()).isEqualTo(0);
+        assertThat(stat.getAveragePrimaryDuration()).isGreaterThan(0.0);
+        assertThat(stat.getAverageCandidateDuration()).isGreaterThan(0.0);
 
     }
 
     @Test
-    public void should_read_current_configuration() throws IOException {
+    public void should_return_result_status_if_return_result_flag_set() throws IOException {
+
+        // Precondition
+        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
 
         // Given
-        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+        final DiferenciaConfiguration.Builder configurationBuilder =
+            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
+                .withSecondary("http://now.httpbin.org").withNoiseDetection(true).withReturnResult(true);
+
+        diferencia = new Diferencia(configurationBuilder);
 
         // When
         diferencia.start();
-        final DiferenciaConfiguration configuration = diferencia.getDiferenciaAdminClient().configuration();
 
-        assertThat(configuration.getNoiseDetection()).isEqualTo(false);
-        assertThat(configuration.getPrimary()).isEqualTo("http://now.httpbin.org/");
-        assertThat(configuration.getDifferenceMode()).isEqualTo(DiferenciaMode.STRICT);
+        // Then
+        final String diferenciaUrl = diferencia.getDiferenciaUrl();
+        final Response response = sendRequest(diferenciaUrl, "/");
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
+        assertThat(response.body().string()).isNotEmpty();
     }
 
     @Test
@@ -218,8 +252,16 @@ public class DiferenciaTest {
         final DiferenciaAdminClient diferenciaAdminClient = diferencia.getDiferenciaAdminClient();
         final Stats stats = diferenciaAdminClient.stats();
 
-        assertThat(stats.isEmpty()).isFalse();
-        assertThat(stats.getStats()).containsExactly(new Stat("GET", "/", 1));
+        final List<Stat> statList = stats.getStats();
+        assertThat(statList).hasSize(1);
+        Stat stat = statList.get(0);
+
+        assertThat(stat.getMethod()).isEqualTo("GET");
+        assertThat(stat.getPath()).isEqualTo("/");
+        assertThat(stat.getSuccess()).isEqualTo(0);
+        assertThat(stat.getErrors()).isEqualTo(1);
+        assertThat(stat.getAveragePrimaryDuration()).isZero();
+        assertThat(stat.getAverageCandidateDuration()).isZero();
     }
 
     private Response sendRequest(String diferenciaUrl, String path) throws IOException {
@@ -239,6 +281,10 @@ public class DiferenciaTest {
 
         return client.newCall(request).execute()
             .code() == HttpURLConnection.HTTP_OK;
+    }
+
+    private void useLocalDiferencia() {
+        diferencia.diferenciaHome = Paths.get(LOCAL_DIFERENCIA);
     }
 
     @After
