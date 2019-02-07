@@ -17,7 +17,7 @@ public class DiferenciaErrorCheckerAssert extends AbstractAssert<DiferenciaError
     }
 
     public DiferenciaErrorCheckerAssert withFilter(String method, String path) {
-        filterStats.add(new Stat(method, path, 0));
+        filterStats.add(new Stat(method, path));
         return this;
     }
 

@@ -1,0 +1,26 @@
+[
+  {
+    "endpoint":{
+      "method":"GET",
+      "path":"/"
+    },
+    "errorDetails":[
+      {
+        "fullURI":"/",
+        "originalHeaders":{
+          "Accept":[
+            "*/*"
+          ],
+          "User-Agent":[
+            "curl/7.54.0"
+          ]
+        },
+        "bodyDiff":"{\n    \"now\": {\n        \"epoch\": 1549560730.403109 =\u003e 1549560730.2835448,\n        \"iso8601\": \"2019-02-07T17:32:10.403109Z\" =\u003e \"2019-02-07T17:32:10.283545Z\",\n        \"rfc2822\": \"Thu, 07 Feb 2019 17:32:10 GMT\",\n        \"rfc3339\": \"2019-02-07T17:32:10.40Z\" =\u003e \"2019-02-07T17:32:10.28Z\",\n        \"slang_date\": \"today\",\n        \"slang_time\": \"now\"\n    },\n    \"urls\": [\n        \"/\",\n        \"/docs\",\n        \"/when/:human-timestamp\",\n        \"/parse/:machine-timestamp\"\n    ]\n}"
+      }
+    ],
+    "errors":1,
+    "success":0,
+    "averagePrimaryDuration":0,
+    "averageCandidateDuration":0
+  }
+]

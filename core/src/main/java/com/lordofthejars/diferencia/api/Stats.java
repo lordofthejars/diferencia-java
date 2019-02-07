@@ -9,7 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class Stats {
 
@@ -55,13 +61,58 @@ public class Stats {
                 final int success = stat.getInt("success", 0);
                 final double averagePrimaryDuration = stat.getDouble("averagePrimaryDuration", 0.0);
                 final double averageCandidateDuration = stat.getDouble("averageCandidateDuration", 0.0);
+                final List<ErrorDetail> errorDetailList = parseErrorDetails(stat);
 
-                currentStats.stats.add(new Stat(method, path, errors, success, averagePrimaryDuration, averageCandidateDuration));
+                currentStats.stats.add(
+                    new Stat(method, path, errors, success, averagePrimaryDuration, averageCandidateDuration, errorDetailList)
+                );
             }
         }
 
         return currentStats;
 
+    }
+
+    private static List<ErrorDetail> parseErrorDetails(JsonObject stat) {
+        final List<ErrorDetail> errorDetailsList = new ArrayList<>();
+        final JsonValue errorDetails = stat.get("errorDetails");
+
+        if (errorDetails != null) {
+            for (JsonValue errorInfo : errorDetails.asArray()) {
+                final JsonObject errorInfoObject = errorInfo.asObject();
+                final String fullUri = errorInfoObject.getString("fullURI", "");
+                final String originalBody = errorInfoObject.getString("originalBody", "");
+                final String headerDiff = errorInfoObject.getString("headerDiff", "");
+                final String bodyDiff = errorInfoObject.getString("bodyDiff", "");
+                final String statusDiff = errorInfoObject.getString("statusDiff", "");
+                final Map<String, String> headers = parseHeaders(errorInfoObject);
+
+                errorDetailsList.add(new ErrorDetail(fullUri, headers, originalBody, bodyDiff, headerDiff, statusDiff));
+            }
+        }
+
+
+        return errorDetailsList;
+
+    }
+
+    private static Map<String, String> parseHeaders(JsonObject errorInfo) {
+        final JsonValue originalHeaders = errorInfo.get("originalHeaders");
+        final Map<String, String> headers = new HashMap<>();
+        if (originalHeaders != null) {
+            final JsonObject originalHeadersObject = originalHeaders.asObject();
+            for (JsonObject.Member member : originalHeadersObject) {
+                headers.put(member.getName(), serializeHeaderValues(member.getValue().asArray()));
+            }
+        }
+
+        return headers;
+    }
+
+    private static String serializeHeaderValues(JsonArray headerValues) {
+        return StreamSupport.stream(headerValues.spliterator(), false)
+            .map(JsonValue::asString)
+            .collect(Collectors.joining(","));
     }
 
 }
