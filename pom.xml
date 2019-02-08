@@ -5,7 +5,7 @@
 
   <groupId>com.lordofthejars.diferencia</groupId>
   <artifactId>diferencia-java</artifactId>
-  <version>0.5.1-SNAPSHOT</version>
+  <version>0.6.0</version>
   <packaging>pom</packaging>
 
   <name>diferencia-java</name>
@@ -25,7 +25,7 @@
     <connection>scm:git:git@github.com:lordofthejars/diferencia-java.git</connection>
     <developerConnection>scm:git:git@github.com:lordofthejars/diferencia-java.git</developerConnection>
     <url>scm:git:git@github.com:lordofthejars/diferencia-java.git</url>
-    <tag>HEAD</tag>
+    <tag>v0.6.0</tag>
   </scm>
 
   <developers>

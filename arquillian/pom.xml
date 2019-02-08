@@ -4,7 +4,7 @@
   <parent>
     <artifactId>diferencia-java</artifactId>
     <groupId>com.lordofthejars.diferencia</groupId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.0</version>
     <relativePath>..</relativePath>
   </parent>
 
