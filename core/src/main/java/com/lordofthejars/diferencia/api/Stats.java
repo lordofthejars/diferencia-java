@@ -77,7 +77,7 @@ public class Stats {
         final List<ErrorDetail> errorDetailsList = new ArrayList<>();
         final JsonValue errorDetails = stat.get("errorDetails");
 
-        if (errorDetails != null) {
+        if (errorDetails != null && !errorDetails.isNull()) {
             for (JsonValue errorInfo : errorDetails.asArray()) {
                 final JsonObject errorInfoObject = errorInfo.asObject();
                 final String fullUri = errorInfoObject.getString("fullURI", "");
