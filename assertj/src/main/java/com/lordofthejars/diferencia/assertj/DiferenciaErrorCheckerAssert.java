@@ -27,7 +27,7 @@ public class DiferenciaErrorCheckerAssert extends AbstractAssert<DiferenciaError
 
         try {
             final Stats stats = this.actual.stats();
-            if (filterStats.isEmpty() && !stats.isEmpty()) {
+            if (filterStats.isEmpty() && stats.containsAnyError()) {
                 failWithMessage("%nExpecting:%n no errors but%n next errors found %s", stats.getStats());
             } else {
 

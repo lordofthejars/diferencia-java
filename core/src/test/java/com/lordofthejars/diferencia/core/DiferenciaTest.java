@@ -28,6 +28,8 @@ public class DiferenciaTest {
 
     //Used for testing with diferencia versions not released yet
     private static final String LOCAL_DIFERENCIA = "/Users/alex/go/src/github.com/lordofthejars/diferencia/diferencia";
+    public static final String CLOCK_HOST = "http://worldclockapi.com";
+    public static final String PATH_NOW = "/api/json/cet/now";
 
     private final OkHttpClient client = new OkHttpClient();
     private Diferencia diferencia;
@@ -36,10 +38,10 @@ public class DiferenciaTest {
     public void should_become_healthy() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
-        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+        diferencia = new Diferencia("http://worldclockapi.com/", CLOCK_HOST);
 
         // When
         diferencia.start();
@@ -71,11 +73,11 @@ public class DiferenciaTest {
     public void should_enable_mirroring_mode() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
         final DiferenciaConfiguration.Builder configurationBuilder =
-            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
+            new DiferenciaConfiguration.Builder(CLOCK_HOST, CLOCK_HOST)
                 .withMirroring(true);
         diferencia = new Diferencia(configurationBuilder);
 
@@ -84,11 +86,11 @@ public class DiferenciaTest {
 
         // Then
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
 
         final JsonReader jsonReader = Json.createReader(new StringReader(response.body().string()));
         final JsonObject body = jsonReader.readObject();
-        assertThat(body.getJsonObject("now")).isNotNull();
+        assertThat(body.get("currentFileTime")).isNotNull();
 
     }
 
@@ -96,17 +98,17 @@ public class DiferenciaTest {
     public void should_mirror_requests_between_primary_and_candidate_and_fail_if_different() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
-        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+        diferencia = new Diferencia(CLOCK_HOST, CLOCK_HOST);
 
         // When
         diferencia.start();
 
         // Then
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);
     }
 
@@ -114,12 +116,12 @@ public class DiferenciaTest {
     public void should_mirror_requests_between_primary_candidate_and_secondary_with_noise_detection() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
         final DiferenciaConfiguration.Builder configurationBuilder =
-            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
-                .withSecondary("http://now.httpbin.org").withNoiseDetection(true);
+            new DiferenciaConfiguration.Builder(CLOCK_HOST, CLOCK_HOST)
+                .withSecondary(CLOCK_HOST).withNoiseDetection(true);
 
         diferencia = new Diferencia(configurationBuilder);
         
@@ -128,7 +130,7 @@ public class DiferenciaTest {
 
         // Then
         final String diferenciaUrl = diferencia.getDiferenciaUrl(); 
-        final Response response = sendRequest(diferenciaUrl, "/"); 
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
 
     }
@@ -137,23 +139,23 @@ public class DiferenciaTest {
     public void should_mirror_requests_between_primary_and_candidate_and_update_with_admin_client() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
-        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+        diferencia = new Diferencia(CLOCK_HOST, CLOCK_HOST);
 
         // When
         diferencia.start();
 
         //If we do not update the configuration, the test should fail
         final DiferenciaConfigurationUpdate build = new DiferenciaConfigurationUpdate.Builder().withNoiseDetection(true)
-            .withSecondary("http://now.httpbin.org/")
+            .withSecondary(CLOCK_HOST)
             .build();
         diferencia.getDiferenciaAdminClient().updateConfig(build);
 
         // Then
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 
@@ -161,14 +163,14 @@ public class DiferenciaTest {
     public void should_read_current_configuration() throws IOException {
 
         // Given
-        diferencia = new Diferencia("http://now.httpbin.org/", "http://now.httpbin.org/");
+        diferencia = new Diferencia(CLOCK_HOST, CLOCK_HOST);
 
         // When
         diferencia.start();
         final DiferenciaConfiguration configuration = diferencia.getDiferenciaAdminClient().configuration();
 
         assertThat(configuration.getNoiseDetection()).isEqualTo(false);
-        assertThat(configuration.getPrimary()).isEqualTo("http://now.httpbin.org/");
+        assertThat(configuration.getPrimary()).isEqualTo(CLOCK_HOST);
         assertThat(configuration.getDifferenceMode()).isEqualTo(DiferenciaMode.STRICT);
     }
 
@@ -176,19 +178,19 @@ public class DiferenciaTest {
     public void should_return_success_in_stat_api_if_no_regression_occurred() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
 
         final DiferenciaConfiguration.Builder configurationBuilder =
-            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
-                .withSecondary("http://now.httpbin.org").withNoiseDetection(true);
+            new DiferenciaConfiguration.Builder(CLOCK_HOST, CLOCK_HOST)
+                .withSecondary(CLOCK_HOST).withNoiseDetection(true);
         diferencia = new Diferencia(configurationBuilder.build());
 
         // When
         diferencia.start();
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
 
         // Then
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
@@ -200,7 +202,7 @@ public class DiferenciaTest {
         Stat stat = statList.get(0);
 
         assertThat(stat.getMethod()).isEqualTo("GET");
-        assertThat(stat.getPath()).isEqualTo("/");
+        assertThat(stat.getPath()).isEqualTo(PATH_NOW);
         assertThat(stat.getSuccess()).isEqualTo(1);
         assertThat(stat.getErrors()).isEqualTo(0);
         assertThat(stat.getAveragePrimaryDuration()).isGreaterThan(0.0);
@@ -212,12 +214,12 @@ public class DiferenciaTest {
     public void should_return_result_status_if_return_result_flag_set() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
         final DiferenciaConfiguration.Builder configurationBuilder =
-            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org")
-                .withSecondary("http://now.httpbin.org").withNoiseDetection(true).withReturnResult(true);
+            new DiferenciaConfiguration.Builder(CLOCK_HOST, CLOCK_HOST)
+                .withSecondary(CLOCK_HOST).withNoiseDetection(true).withReturnResult(true);
 
         diferencia = new Diferencia(configurationBuilder);
 
@@ -226,7 +228,7 @@ public class DiferenciaTest {
 
         // Then
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_OK);
         assertThat(response.body().string()).isNotEmpty();
     }
@@ -235,17 +237,17 @@ public class DiferenciaTest {
     public void should_return_failed_elements_in_stat_api_if_regression_occurred() throws IOException {
 
         // Precondition
-        assumeTrue(isUpAndRunning("http://now.httpbin.org"));
+        assumeTrue(isUpAndRunning(CLOCK_HOST));
 
         // Given
         final DiferenciaConfiguration.Builder configurationBuilder =
-            new DiferenciaConfiguration.Builder("http://now.httpbin.org", "http://now.httpbin.org");
+            new DiferenciaConfiguration.Builder(CLOCK_HOST, CLOCK_HOST);
         diferencia = new Diferencia(configurationBuilder.build());
 
         // When
         diferencia.start();
         final String diferenciaUrl = diferencia.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, PATH_NOW);
 
         // Then
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);
@@ -257,7 +259,7 @@ public class DiferenciaTest {
         Stat stat = statList.get(0);
 
         assertThat(stat.getMethod()).isEqualTo("GET");
-        assertThat(stat.getPath()).isEqualTo("/");
+        assertThat(stat.getPath()).isEqualTo(PATH_NOW);
         assertThat(stat.getSuccess()).isEqualTo(0);
         assertThat(stat.getErrors()).isEqualTo(1);
         assertThat(stat.getAveragePrimaryDuration()).isZero();

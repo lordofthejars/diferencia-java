@@ -14,14 +14,14 @@ public class DiferenciaRuleTest {
 
     @ClassRule
     public static DiferenciaRule diferenciaRule =
-        new DiferenciaRule("http://now.httpbin.org/", "http://now.httpbin.org/");
+        new DiferenciaRule("http://worldclockapi.com", "http://worldclockapi.com");
 
     private final OkHttpClient client = new OkHttpClient();
 
     @Test
     public void should_use_diferencia_to_detect_any_possible_regression() throws IOException {
         final String diferenciaUrl = diferenciaRule.getDiferenciaUrl();
-        final Response response = sendRequest(diferenciaUrl, "/");
+        final Response response = sendRequest(diferenciaUrl, "/api/json/cet/now");
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);
     }
 
