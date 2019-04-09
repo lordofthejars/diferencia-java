@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
-public class HttpBinNowArquillianTest {
+public class WorldClockArquillianTest {
 
     @DiferenciaUrl
     URL diferencia;
@@ -28,7 +28,7 @@ public class HttpBinNowArquillianTest {
         final OkHttpClient client = new OkHttpClient();
 
         // When
-        final Response response = sendRequest(diferencia.toExternalForm(), "/", client);
+        final Response response = sendRequest(diferencia.toExternalForm(), "/api/json/cet/now", client);
 
         // Then
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_PRECON_FAILED);

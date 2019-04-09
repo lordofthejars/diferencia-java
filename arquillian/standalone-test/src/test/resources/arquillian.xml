@@ -5,8 +5,8 @@
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
   <extension qualifier="diferencia">
-    <property name="primary">http://now.httpbin.org/</property>
-    <property name="candidate">http://now.httpbin.org/</property>
+    <property name="primary">http://worldclockapi.com</property>
+    <property name="candidate">http://worldclockapi.com</property>
   </extension>
 
 </arquillian>
