@@ -6,7 +6,7 @@
   <parent>
     <artifactId>diferencia-java-arquillian</artifactId>
     <groupId>com.lordofthejars.diferencia</groupId>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.6.1</version>
     <relativePath>..</relativePath>
   </parent>
 
